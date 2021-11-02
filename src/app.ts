@@ -1,16 +1,17 @@
 import 'reflect-metadata';
 import * as dotenv from 'dotenv';
 import { createConnection } from 'typeorm';
+import { runner } from './examples';
 dotenv.config();
 
 export const start = async () => {
   try {
     const connection = await createConnection();
-    console.log('banco de dados conectado com sucesso.');
-    
+    await runner(connection);
+
     process.exit(0);
   } catch (error: unknown) {
-    console.log('erro inesperado');
+    console.log(error);
     process.exit(1);
   }
 };
