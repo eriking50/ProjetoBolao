@@ -1,26 +1,32 @@
-import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne, OneToMany, ManyToMany } from "typeorm";
+import { Endereco } from "./EnderecoEntity";
 import { Aposta } from "./ApostaEntity";
 import { Campeonato } from "./CampeonatoEntity";
-import { Endereco } from "./EnderecoEntity";
 
 @Entity()
 export class Usuario {
   @PrimaryGeneratedColumn()
   id: number;
   
-  @Column()
+  @Column({ 
+    nullable: false,
+    length: 50 
+  })
   nome: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ 
+    unique: true,
+    length: 50 
+  })
   email: string;
   
-  @Column()
+  @Column({ 
+    nullable: false,
+    length: 50 
+  })
   hashSenha: string;
 
-  @Column({ nullable: false, default: true })
-  ativo: boolean;
-
-  @OneToOne(() => Endereco, endereco => endereco.usuario, { cascade: true })
+  @OneToOne(() => Endereco, endereco => endereco.usuario)
   endereco: Endereco;
 
   @OneToMany(() => Aposta, aposta => aposta.usuario)
