@@ -37,7 +37,9 @@ export class Campeonato {
     })
     logo: string;
 
-    @Column()
+    @Column({
+        unique: true
+    })
     idCampeonatoApiExterna: number;
 
     @OneToMany(() => Rodada, rodada => rodada.campeonato)
