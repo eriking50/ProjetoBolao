@@ -14,10 +14,10 @@ export class Partida {
     })
     placar: string;
 
-    @ManyToOne(() => Time, time => time.partida)
+    @ManyToOne(() => Time, time => time.partidasMandante)
     mandante: number;
 
-    @ManyToOne(() => Time, time => time.partida)
+    @ManyToOne(() => Time, time => time.partidasVisitante)
     visitante: number;
 
     @Column({ 
