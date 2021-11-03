@@ -26,6 +26,9 @@ export class Usuario {
   })
   hashSenha: string;
 
+  @Column()
+  ativo: boolean;
+
   @OneToOne(() => Endereco, endereco => endereco.usuario)
   endereco: Endereco;
 
