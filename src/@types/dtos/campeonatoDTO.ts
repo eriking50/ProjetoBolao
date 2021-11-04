@@ -4,7 +4,7 @@ export interface CampeonatoDTO {
     slug: string,
     nomePopular: string,
     status: string,
-    logo?: string,
+    logo: string,
     idCampeonatoApiExterna: number,
 }
 

@@ -4,7 +4,6 @@ import { Campeonato } from "models/CampeonatoEntity";
 import { CampeonatoJaCadastrado } from "../@types/errors/CampeonatoJaCadastrado";
 
 export class CampeonatoService {
-    public static TEMPO_PARA_EXPIRACAO_DE_TOKEN = '6 hours';
     constructor(private campeonatoRepository: ICampeonatoRespository) {}
 
     async criar(dadosCampeonato: CampeonatoDTO): Promise<CampeonatoDTO> {
