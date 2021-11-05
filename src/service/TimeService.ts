@@ -43,6 +43,9 @@ export class TimeService implements ITimeService {
         if (timeResponse.sigla !== time.sigla) {
             time.sigla = timeResponse.sigla;
         }
+        if (timeResponse.escudo !== time.escudo) {
+            time.escudo = timeResponse.escudo;
+        }
         return time;
     }
 
