@@ -20,11 +20,6 @@ export class RodadaService {
         }
     }
 
-    async atualizarDados(campeonato: Campeonato): Promise<void> {
-        const rodadasAtualizadas = await this.buscarDadosRodadaAPI(campeonato);
-
-    }
-
     private async buscarDadosRodadaAPI(campeonato: Campeonato): Promise<Rodada[]> {
         try {
             const dadosCampeonato = await this.brasileiraoClient.getDadosCampeonatoAPI(campeonato.idCampeonatoApiExterna);
@@ -40,32 +35,46 @@ export class RodadaService {
             const rodadas = await Promise.all(rodadasPromiseBD);
             return rodadas;
         } catch (error) {
-            throw new Error(`Erro ao buscar rodadas na API: Motivo ${error.message}`);
+            throw new Error(`Erro ao buscar rodadas na API. Motivo ${error.message}`);
         }
     }
 
-    private async rodadasFactory(rodadaResponse: RodadaResponse, campeonato: Campeonato): Promise<Rodada> {
-        const rodadaBD = await this.rodadaRepository.getRodadaBySlug(rodadaResponse.slug);
-        let rodada: Rodada;
+    private atualizarRodada(rodadaResponse: RodadaResponse, rodada: Rodada): Rodada {
+        if (rodada.status !== rodadaResponse.status) {
+            rodada.status = rodadaResponse.status;
+        }
+        if (rodada.nome !== rodadaResponse.nome) {
+            rodada.nome = rodadaResponse.nome;
+        }
+        if (rodada.rodada !== rodadaResponse.rodada) {
+            rodada.rodada = rodadaResponse.rodada;
+        }
+        return rodada
+    }
 
-        if (rodadaBD) {
-            rodada = rodadaBD;
-        } else {
-            rodada = new Rodada();
+    private async rodadasFactory(rodadaResponse: RodadaResponse, campeonato: Campeonato): Promise<Rodada> {
+        try {
+            const rodadaBD = await this.rodadaRepository.getRodadaBySlug(rodadaResponse.slug);
+            if (rodadaBD) {
+                return this.atualizarRodada(rodadaResponse, rodadaBD);
+            }
+
+            const rodada = new Rodada();
             rodada.nome = rodadaResponse.nome;
             rodada.slug = rodadaResponse.slug;
             rodada.status = rodadaResponse.status;
             rodada.rodada = rodadaResponse.rodada;
             rodada.campeonato = campeonato;
+
+            const partidasPromise = rodadaResponse.partidas.map(partida => {
+                return this.partidaService.partidasFactory(partida)
+            }, this);
+
+            rodada.partidas = await Promise.all(partidasPromise);
+            return rodada;
+        } catch (error) {
+            throw new Error(`Erro ao gerar rodada. Motivo ${error.message}`);
         }
-
-        const partidasPromise = rodadaResponse.partidas.map(partida => {
-            return this.partidaService.partidasFactory(partida)
-        }, this);
-
-        rodada.partidas = await Promise.all(partidasPromise);
-        return rodada;
     }
-    
-    
+
 }
