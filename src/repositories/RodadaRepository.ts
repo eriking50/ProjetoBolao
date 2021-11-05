@@ -4,7 +4,7 @@ import { IRodadaRepository } from "./IRodadaRepository";
 
 @EntityRepository(Rodada)
 export class RodadaRepository extends Repository<Rodada> implements IRodadaRepository {
-    getRodadaBySlug(slugFind: string): Promise<Rodada> {
+    findBySlug(slugFind: string): Promise<Rodada> {
         return this.findOne({ where: { slug: slugFind } });
     }
     

@@ -61,7 +61,7 @@ export class RodadaService {
 
     private async rodadasFactory(rodadaResponse: RodadaResponse, campeonato: Campeonato): Promise<Rodada> {
         try {
-            const rodadaBD = await this.rodadaRepository.getRodadaBySlug(rodadaResponse.slug);
+            const rodadaBD = await this.rodadaRepository.findBySlug(rodadaResponse.slug);
             if (rodadaBD) {
                 return this.atualizarRodada(rodadaResponse, rodadaBD);
             }

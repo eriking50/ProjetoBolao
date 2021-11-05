@@ -10,7 +10,7 @@ export class PartidaService implements IPartidaService {
         private timeService: ITimeService
         ) {}
 
-    async atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Promise<Partida> {
+    private async atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Promise<Partida> {
         if (partidaResponse.status !== partida.status) {
             partida.status = partidaResponse.status;
             partida.placarMandante = partidaResponse.placar_mandante;
