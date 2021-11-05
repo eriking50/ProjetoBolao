@@ -21,9 +21,13 @@ export class CampeonatoService {
         }
     }
     
+    async buscarCampeonato(slug: string): Promise<Campeonato> {
+        return await this.campeonatoRepository.findBySlug(slug);
+    }
+    
     async atualizarDadosCampeonato(campeonato: Campeonato): Promise<void> {
         try {
-            await this.timesService.criarTimes(campeonato.idCampeonatoApiExterna);
+            await this.timesService.atualizarDadosDosTimes(campeonato.idCampeonatoApiExterna);
             await this.rodadaService.gerarRodadas(campeonato);
         } catch (error) {
             throw new Error(`Erro ao atualizar dados do campeonato. Motivo: ${error.message}`);

@@ -39,7 +39,7 @@ export class RodadaService {
         }
     }
 
-    private atualizarRodada(rodadaResponse: RodadaResponse, rodada: Rodada): Rodada {
+    private async atualizarRodada(rodadaResponse: RodadaResponse, rodada: Rodada): Promise<Rodada> {
         if (rodada.status !== rodadaResponse.status) {
             rodada.status = rodadaResponse.status;
         }
@@ -49,6 +49,12 @@ export class RodadaService {
         if (rodada.rodada !== rodadaResponse.rodada) {
             rodada.rodada = rodadaResponse.rodada;
         }
+        const partidaPromise = rodadaResponse.partidas.map(partida => {
+            return this.partidaService.partidasFactory(partida)
+        }, this)
+
+        rodada.partidas = await Promise.all(partidaPromise);
+
         return rodada
     }
 

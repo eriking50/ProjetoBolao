@@ -6,11 +6,12 @@ import {
   alteraSenha
 } from './UsuarioExample';
 import { buscaEnderecoPeloCep } from './EnderecoExample';
-import { criarCampeonato } from './CampeonatoExample';
+import { atualizarCampeonato, criarCampeonato } from './CampeonatoExample';
 
 export const runner = async (connection: Connection) => {
   // await buscaEnderecoPeloCep();
-  await criarCampeonato(connection);
+  // await criarCampeonato(connection);
+  await atualizarCampeonato(connection);
   // await criaUsuario(connection);
   // await autenticaUsuario(connection);
   // await alteraUsuario(connection);

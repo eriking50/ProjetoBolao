@@ -10,7 +10,7 @@ export class PartidaService implements IPartidaService {
         private timeService: ITimeService
         ) {}
 
-    private atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Partida {
+    async atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Promise<Partida> {
         if (partidaResponse.status !== partida.status) {
             partida.status = partidaResponse.status;
             partida.placarMandante = partidaResponse.placar_mandante;
@@ -19,8 +19,10 @@ export class PartidaService implements IPartidaService {
         if (partidaResponse.placar !== partida.placar) {
             partida.placar = partidaResponse.placar;
         }
-        if (partidaResponse.data_realizacao_iso.getTime() !== partida.dataRealizacao.getTime()) {
-            partida.dataRealizacao = partidaResponse.data_realizacao_iso;
+        if (partida.dataRealizacao && partidaResponse.data_realizacao_iso) {
+            if (new Date(partidaResponse.data_realizacao_iso).getTime() !== partida.dataRealizacao.getTime()) {
+                partida.dataRealizacao = partidaResponse.data_realizacao_iso;
+            }
         }
         return partida;
     }

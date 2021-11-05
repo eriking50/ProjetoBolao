@@ -31,5 +31,20 @@ export const criarCampeonato = async (connection: Connection) => {
     }
     
     const campeonato = await campeonatoService.criar(dadosCampeonato);
-    await campeonatoService.atualizarDadosCampeonato(campeonato);
 };
+
+export const atualizarCampeonato = async (connection: Connection) => {
+    const brasileiraoClient = new BrasileiraoClient();
+    const rodadaRepo = connection.getCustomRepository(RodadaRepository);
+    const campeonatoRepo = connection.getCustomRepository(CampeonatoRepository);
+    const partidaRepo = connection.getCustomRepository(PartidaRepository);
+    const timeRepo = connection.getCustomRepository(TimeRepository);
+
+    const timesService = new TimeService(timeRepo, brasileiraoClient);
+    const partidaService = new PartidaService(partidaRepo, timesService);
+    const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, partidaService);
+    const campeonatoService = new CampeonatoService(campeonatoRepo, timesService, rodadaService);
+
+    const campeonato = await campeonatoService.buscarCampeonato("brasileirão-2021");
+    await campeonatoService.atualizarDadosCampeonato(campeonato);
+}

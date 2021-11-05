@@ -17,7 +17,7 @@ export class TimeService implements ITimeService {
         }
     }
 
-    async criarTimes(idCampeonato: number): Promise<void> {
+    async atualizarDadosDosTimes(idCampeonato: number): Promise<void> {
         try {
             const tabelaResponse = await this.brasileiraoClient.getTabelaAPI(idCampeonato);
             const tabelaPromise = tabelaResponse.map(({time}) => {
