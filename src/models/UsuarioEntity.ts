@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne, OneToMany, ManyToMany } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne, OneToMany, ManyToMany, JoinTable } from "typeorm";
 import { Endereco } from "./EnderecoEntity";
 import { Aposta } from "./ApostaEntity";
 import { Campeonato } from "./CampeonatoEntity";
@@ -37,7 +37,8 @@ export class Usuario {
 
   @OneToMany(() => Aposta, aposta => aposta.usuario)
   apostas: Aposta[];
-
+  
   @ManyToMany(() => Campeonato, campeonato => campeonato.usuarios)
+  @JoinTable()
   campeonatos: Campeonato[];
 }

@@ -1,5 +1,5 @@
 import { EntityRepository, Repository } from "typeorm";
-import { Campeonato } from "models/CampeonatoEntity";
+import { Campeonato } from "../models/CampeonatoEntity";
 import { ICampeonatoRespository } from "./ICampeonatoRepository";
 
 @EntityRepository(Campeonato)

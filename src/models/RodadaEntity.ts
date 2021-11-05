@@ -30,7 +30,7 @@ export class Rodada {
     })
     status: string;
 
-    @OneToMany(() => Partida, partida => partida.rodada)
+    @OneToMany(() => Partida, partida => partida.rodada, {cascade: true})
     partidas: Partida[];
 
     @ManyToOne(() => Campeonato, campeonato => campeonato.rodadas)

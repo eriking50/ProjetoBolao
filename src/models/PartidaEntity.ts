@@ -15,18 +15,18 @@ export class Partida {
     placar: string;
 
     @ManyToOne(() => Time, time => time.partidasMandante)
-    mandante: number;
+    mandante: Time;
 
     @ManyToOne(() => Time, time => time.partidasVisitante)
-    visitante: number;
+    visitante: Time;
 
     @Column({ 
-        nullable: false 
+        nullable: true
     })
     placarMandante: number;
 
     @Column({ 
-        nullable: false 
+        nullable: true
     })
     placarVisitante: number;
 
@@ -43,7 +43,7 @@ export class Partida {
     slug: string;
 
     @Column({ 
-        nullable: false 
+        nullable: true 
     })
     dataRealizacao: Date;
 
