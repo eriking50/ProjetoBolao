@@ -7,8 +7,5 @@ export class RodadaRepository extends Repository<Rodada> implements IRodadaRepos
     getRodadaBySlug(slugFind: string): Promise<Rodada> {
         return this.findOne({ where: { slug: slugFind } });
     }
-    getRodadas(): Promise<Rodada[]> {
-        return this.find();
-    }
     
 }
