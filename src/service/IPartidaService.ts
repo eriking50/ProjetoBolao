@@ -1,4 +1,4 @@
-import { PartidaResponse } from "clients/BrasileiraoClient";
+import { PartidaResponse } from "../@types/dtos/brasileicaoClientDTO";
 import { Partida } from "models/PartidaEntity";
 
 

@@ -1,5 +1,6 @@
 import { ITimeRepository } from "../repositories/ITimeRepository";
-import BrasileiraoClient, { TimeResponse } from "../clients/BrasileiraoClient";
+import BrasileiraoClient from "../clients/BrasileiraoClient";
+import { TimeResponse } from "../@types/dtos/brasileicaoClientDTO";
 import { Time } from "../models/TimeEntity";
 import { ITimeService } from "./ITimeService";
 

@@ -1,5 +1,6 @@
 import { Rodada } from "../models/RodadaEntity";
-import BrasileiraoClient, { RodadaResponse } from "../clients/BrasileiraoClient";
+import BrasileiraoClient from "../clients/BrasileiraoClient";
+import { RodadaResponse } from "../@types/dtos/brasileicaoClientDTO";
 import { IRodadaRepository } from "../repositories/IRodadaRepository";
 import { Campeonato } from "../models/CampeonatoEntity";
 import { IPartidaService } from "./IPartidaService";

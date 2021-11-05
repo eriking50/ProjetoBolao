@@ -34,11 +34,6 @@ export class CampeonatoService {
         }
     }
 
-    private omitIdCampeonato(campeonato: Campeonato): CampeonatoCriadoDTO {
-        const {id, ...campeonatoCriado } = campeonato;
-        return campeonatoCriado;
-    }
-
     private async campeonatoFactory(dadosCampeonato: CampeonatoDTO): Promise<Campeonato>{
         try {
             const campeonatoBD = await this.campeonatoRepository.findBySlug(dadosCampeonato.slug);
