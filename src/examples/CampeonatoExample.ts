@@ -6,15 +6,19 @@ import { RodadaService } from "../service/RodadaService";
 import { Connection } from "typeorm";
 import { TimeRepository } from "../repositories/TimeRepository";
 import { TimeService } from "../service/TimeService";
+import { PartidaService } from "../service/PartidaService";
+import { PartidaRepository } from "../repositories/PartidaRepository";
 
 export const criarCampeonato = async (connection: Connection) => {
     const brasileiraoClient = new BrasileiraoClient();
     const rodadaRepo = connection.getCustomRepository(RodadaRepository);
     const campeonatoRepo = connection.getCustomRepository(CampeonatoRepository);
+    const partidaRepo = connection.getCustomRepository(PartidaRepository);
     const timeRepo = connection.getCustomRepository(TimeRepository);
 
-    const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, timeRepo);
     const timesService = new TimeService(timeRepo, brasileiraoClient);
+    const partidaService = new PartidaService(partidaRepo, timesService);
+    const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, partidaService);
     const campeonatoService = new CampeonatoService(campeonatoRepo, timesService, rodadaService);
     
     const dadosCampeonato = {

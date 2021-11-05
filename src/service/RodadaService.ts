@@ -1,68 +1,71 @@
-import { Partida } from "../models/PartidaEntity";
 import { Rodada } from "../models/RodadaEntity";
-import { Time } from "../models/TimeEntity";
-import { ITimeRepository } from "../repositories/ITimeRepository";
-import BrasileiraoClient, { PartidaResponse, RodadaResponse, TimeResponse } from "../clients/BrasileiraoClient";
+import BrasileiraoClient, { RodadaResponse } from "../clients/BrasileiraoClient";
 import { IRodadaRepository } from "../repositories/IRodadaRepository";
-import { Campeonato } from "models/CampeonatoEntity";
+import { Campeonato } from "../models/CampeonatoEntity";
+import { IPartidaService } from "./IPartidaService";
 
 export class RodadaService {
     constructor(
         private brasileiraoClient: BrasileiraoClient,
         private rodadaRepository: IRodadaRepository,
-        private timeRepository: ITimeRepository
+        private partidaService: IPartidaService
         ) {}
 
-    async gerarRodadasCampeonato(idCampeonato: number, campeonato: Campeonato): Promise<void> {
+    async gerarRodadas(campeonato: Campeonato): Promise<void> {
         try {
-            const dadosCampeonato = await this.brasileiraoClient.getDadosCampeonatoAPI(idCampeonato);
+            const rodadas = await this.buscarDadosRodadaAPI(campeonato);
+            await this.rodadaRepository.save(rodadas)
+        } catch (error) {
+            throw new Error(`Erro ao gerar rodadas: Motivo ${error.message}`);
+        }
+    }
+
+    async atualizarDados(campeonato: Campeonato): Promise<void> {
+        const rodadasAtualizadas = await this.buscarDadosRodadaAPI(campeonato);
+
+    }
+
+    private async buscarDadosRodadaAPI(campeonato: Campeonato): Promise<Rodada[]> {
+        try {
+            const dadosCampeonato = await this.brasileiraoClient.getDadosCampeonatoAPI(campeonato.idCampeonatoApiExterna);
             const rodadasPromiseAPI = dadosCampeonato.map(rodada => {
-                return this.brasileiraoClient.getRodadasAPI(rodada.rodada, idCampeonato);
+                return this.brasileiraoClient.getRodadasAPI(rodada.rodada, campeonato.idCampeonatoApiExterna);
             });
             const rodadasDaApi = await Promise.all(rodadasPromiseAPI);
-    
+
             const rodadasPromiseBD = rodadasDaApi.map(rodada => {
                 return this.rodadasFactory(rodada, campeonato);
             }, this);
 
             const rodadas = await Promise.all(rodadasPromiseBD);
-            await this.rodadaRepository.save(rodadas);
+            return rodadas;
         } catch (error) {
-            throw new Error(`Erro ao gerar rodadas no banco de dados: Motivo ${error.message}`);
+            throw new Error(`Erro ao buscar rodadas na API: Motivo ${error.message}`);
         }
     }
 
     private async rodadasFactory(rodadaResponse: RodadaResponse, campeonato: Campeonato): Promise<Rodada> {
-        const rodada = new Rodada();
-        rodada.nome = rodadaResponse.nome;
-        rodada.slug = rodadaResponse.slug;
-        rodada.status = rodadaResponse.status;
-        rodada.rodada = rodadaResponse.rodada;
-        rodada.campeonato = campeonato;
+        const rodadaBD = await this.rodadaRepository.getRodadaBySlug(rodadaResponse.slug);
+        let rodada: Rodada;
+
+        if (rodadaBD) {
+            rodada = rodadaBD;
+        } else {
+            rodada = new Rodada();
+            rodada.nome = rodadaResponse.nome;
+            rodada.slug = rodadaResponse.slug;
+            rodada.status = rodadaResponse.status;
+            rodada.rodada = rodadaResponse.rodada;
+            rodada.campeonato = campeonato;
+        }
+
         const partidasPromise = rodadaResponse.partidas.map(partida => {
-            return this.partidasFactory(partida)
+            return this.partidaService.partidasFactory(partida)
         }, this);
+
         rodada.partidas = await Promise.all(partidasPromise);
         return rodada;
     }
     
-    private async partidasFactory(partidaResponse: PartidaResponse): Promise<Partida> {
-        const partida = new Partida();
-        partida.slug = partidaResponse.slug;
-        partida.status = partidaResponse.status;
-        partida.dataRealizacao = new Date(`${partidaResponse.data_realizacao_iso}`);
-        
-        const visitante = await this.timeRepository.findByNome(partidaResponse.time_visitante.nome_popular);
-        partida.visitante = visitante;
-        
-        const mandante = await this.timeRepository.findByNome(partidaResponse.time_mandante.nome_popular);
-        partida.mandante = mandante;
-        
-        partida.placar = partidaResponse.placar;
-        if (partidaResponse.status === 'finalizado') {
-            partida.placarMandante = partidaResponse.placar_mandante;
-            partida.placarVisitante = partidaResponse.placar_visitante;
-        }
-        return partida;
-    }
+    
 }

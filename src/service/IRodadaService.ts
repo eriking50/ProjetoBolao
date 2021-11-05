@@ -1,5 +1,6 @@
 import { Campeonato } from "models/CampeonatoEntity";
+import { Rodada } from "models/RodadaEntity";
 
 export interface IRodadaService {
-    gerarRodadasCampeonato(idCampeonato: number, campeonato: Campeonato): Promise<void>;
+    gerarRodadas(campeonato: Campeonato): Promise<void>;
 }

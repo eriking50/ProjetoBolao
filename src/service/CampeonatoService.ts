@@ -1,7 +1,6 @@
 import { CampeonatoCriadoDTO, CampeonatoDTO } from "../@types/dtos/campeonatoDTO";
 import { ICampeonatoRespository } from "../repositories/ICampeonatoRepository";
 import { Campeonato } from "../models/CampeonatoEntity";
-import { CampeonatoJaCadastrado } from "../@types/errors/CampeonatoJaCadastrado";
 import { IRodadaService } from "./IRodadaService";
 import { ITimeService } from "./ITimeService";
 
@@ -14,17 +13,12 @@ export class CampeonatoService {
 
     async criar(dadosCampeonato: CampeonatoDTO): Promise<CampeonatoDTO> {
         try {
-            const campeonato = this.campeonatoFactory(dadosCampeonato);
-            const resultado = await this.campeonatoRepository.save(campeonato);
+            const campeonatoClasse = await this.campeonatoFactory(dadosCampeonato);
+            const campeonatoBD = await this.campeonatoRepository.save(campeonatoClasse);
             await this.timesService.criarTimes(dadosCampeonato.idCampeonatoApiExterna);
-            await this.rodadaService.gerarRodadasCampeonato(dadosCampeonato.idCampeonatoApiExterna, resultado);
-            return this.omitIdCampeonato(resultado);
-            return
+            await this.rodadaService.gerarRodadas(campeonatoBD);
+            return this.omitIdCampeonato(campeonatoBD);
         } catch (error) {
-            if (error?.code === CampeonatoJaCadastrado.CODE) {
-                throw new CampeonatoJaCadastrado();
-            }
-
             throw error;
         }
     }
@@ -34,14 +28,20 @@ export class CampeonatoService {
         return campeonatoCriado;
     }
 
-    private campeonatoFactory(dadosCampeonato: CampeonatoDTO): Campeonato{
-        const campeonato = new Campeonato();
-        campeonato.idCampeonatoApiExterna = dadosCampeonato.idCampeonatoApiExterna;
-        campeonato.logo = dadosCampeonato.logo;
-        campeonato.nome = dadosCampeonato.nome;
-        campeonato.nomePopular = dadosCampeonato.nomePopular;
-        campeonato.slug = dadosCampeonato.slug;
-        campeonato.status = dadosCampeonato.status;
+    private async campeonatoFactory(dadosCampeonato: CampeonatoDTO): Promise<Campeonato>{
+        const campeonatoBD = await this.campeonatoRepository.findBySlug(dadosCampeonato.slug);
+        let campeonato: Campeonato;
+        if (campeonatoBD) {
+            campeonato = campeonatoBD;
+        } else {
+            campeonato = new Campeonato();
+            campeonato.idCampeonatoApiExterna = dadosCampeonato.idCampeonatoApiExterna;
+            campeonato.logo = dadosCampeonato.logo;
+            campeonato.nome = dadosCampeonato.nome;
+            campeonato.nomePopular = dadosCampeonato.nomePopular;
+            campeonato.slug = dadosCampeonato.slug;
+            campeonato.status = dadosCampeonato.status;
+        }
         return campeonato;
     }
 }
