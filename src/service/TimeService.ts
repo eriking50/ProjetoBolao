@@ -37,9 +37,6 @@ export class TimeService implements ITimeService {
     }
 
     private atualizarTime(timeResponse: TimeResponse, time: Time): Time {
-        if (timeResponse.nome_popular !== time.nome) {
-            time.nome = timeResponse.nome_popular;
-        }
         if (timeResponse.sigla !== time.sigla) {
             time.sigla = timeResponse.sigla;
         }

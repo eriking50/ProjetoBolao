@@ -11,11 +11,11 @@ export class CampeonatoService {
         private rodadaService: IRodadaService
         ) {}
 
-    async criar(dadosCampeonato: CampeonatoDTO): Promise<CampeonatoDTO> {
+    async criar(dadosCampeonato: CampeonatoDTO): Promise<Campeonato> {
         try {
             const campeonatoClasse = await this.campeonatoFactory(dadosCampeonato);
             const campeonatoBD = await this.campeonatoRepository.save(campeonatoClasse);
-            return this.omitIdCampeonato(campeonatoBD);
+            return campeonatoBD;
         } catch (error) {
             throw new Error(`Erro ao criar campeonato. Motivo: ${error.message}`);
         }
