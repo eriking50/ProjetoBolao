@@ -41,4 +41,11 @@ export class Usuario {
   @ManyToMany(() => Campeonato, campeonato => campeonato.usuarios)
   @JoinTable()
   campeonatos: Campeonato[];
+
+  adicionarCampeonato(campeonato: Campeonato) {
+    if (!this.campeonatos) {
+      this.campeonatos = [];
+    }
+    this.campeonatos.push(campeonato);
+  }
 }

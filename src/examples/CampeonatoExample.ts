@@ -45,6 +45,6 @@ export const atualizarCampeonato = async (connection: Connection) => {
     const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, partidaService);
     const campeonatoService = new CampeonatoService(campeonatoRepo, timesService, rodadaService);
 
-    const campeonato = await campeonatoService.buscarCampeonato("brasileirão-2021");
+    const campeonato = await campeonatoService.buscarCampeonatoBySlug("brasileirão-2021");
     await campeonatoService.atualizarDadosCampeonato(campeonato);
-}
+};

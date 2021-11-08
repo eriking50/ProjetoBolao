@@ -10,6 +10,10 @@ export class PartidaService implements IPartidaService {
         private timeService: ITimeService
         ) {}
 
+    buscaPartidaByRodada(rodadaId: number): Promise<Partida[]> {
+        return this.partidaRepository.findbyRodadaId(rodadaId);
+    }
+
     private async atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Promise<Partida> {
         if (partidaResponse.status !== partida.status) {
             partida.status = partidaResponse.status;

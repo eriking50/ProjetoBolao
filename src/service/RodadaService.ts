@@ -4,13 +4,18 @@ import { RodadaResponse } from "../@types/dtos/brasileicaoClientDTO";
 import { IRodadaRepository } from "../repositories/IRodadaRepository";
 import { Campeonato } from "../models/CampeonatoEntity";
 import { IPartidaService } from "./IPartidaService";
+import { IRodadaService } from "./IRodadaService";
 
-export class RodadaService {
+export class RodadaService implements IRodadaService {
     constructor(
         private brasileiraoClient: BrasileiraoClient,
         private rodadaRepository: IRodadaRepository,
         private partidaService: IPartidaService
         ) {}
+
+    buscarRodadaByNumero(numeroRodada: number): Promise<Rodada> {
+        return this.rodadaRepository.findByNumeroRodada(numeroRodada);
+    }
 
     async gerarRodadas(campeonato: Campeonato): Promise<void> {
         try {

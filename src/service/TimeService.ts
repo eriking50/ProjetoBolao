@@ -14,7 +14,7 @@ export class TimeService implements ITimeService {
         try {
             return await this.timeRepository.findByNome(nome);
         } catch (error) {
-            throw new Error(`Erro ao buscar dados dos times no banco. Motivo ${error.message}`);
+            throw new Error(`Erro ao buscar dados do time no banco. Motivo ${error.message}`);
         }
     }
 

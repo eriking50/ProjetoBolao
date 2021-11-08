@@ -1,4 +1,4 @@
-import { CampeonatoCriadoDTO, CampeonatoDTO } from "../@types/dtos/campeonatoDTO";
+import { CampeonatoDTO } from "../@types/dtos/campeonatoDTO";
 import { ICampeonatoRespository } from "../repositories/ICampeonatoRepository";
 import { Campeonato } from "../models/CampeonatoEntity";
 import { IRodadaService } from "./IRodadaService";
@@ -21,7 +21,7 @@ export class CampeonatoService {
         }
     }
     
-    async buscarCampeonato(slug: string): Promise<Campeonato> {
+    async buscarCampeonatoBySlug(slug: string): Promise<Campeonato> {
         return await this.campeonatoRepository.findBySlug(slug);
     }
     
