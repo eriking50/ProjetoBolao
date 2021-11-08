@@ -6,7 +6,6 @@ import { IUsuarioRepository } from "./IUsuarioRepository";
 export class UsuarioRepository extends Repository<Usuario> implements IUsuarioRepository {
   findByEmail(email: string): Promise<Usuario> {
     return this.findOne({
-      relations: ['campeonatos'],
       where: { email }
     });
   }

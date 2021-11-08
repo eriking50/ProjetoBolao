@@ -1,3 +1,4 @@
+import { Endereco } from "models/EnderecoEntity";
 import {
   AlterarUsuarioDTO,
   AutenticaUsuarioDTO,
@@ -7,7 +8,7 @@ import {
 } from "../@types/dtos/usuarioDto";
 
 export interface IUsuarioService {
-  criar(dadosUsuario: UsuarioDTO): Promise<UsuarioCriadoDTO>;
+  criar(dadosUsuario: UsuarioDTO, endereco: Endereco): Promise<UsuarioCriadoDTO>;
   autenticar(dadosUsuario: AutenticaUsuarioDTO): Promise<RetornoAutenticacao>;
   alterar(usuarioId: number, usuarioDTO: AlterarUsuarioDTO): Promise<void>;
   alterarSenha(usuarioid: number, senhaAntiga: string, novaSenha: string): Promise<void>;

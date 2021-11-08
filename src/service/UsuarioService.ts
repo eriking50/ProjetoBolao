@@ -11,14 +11,19 @@ import { UsuarioOuSenhaIncorretos } from "../@types/errors/UsuarioOuSenhaIncorre
 import { generateJwtToken } from "../helpers/token";
 import { IUsuarioService } from "./IUsuarioService";
 import { IUsuarioRepository } from "../repositories/IUsuarioRepository";
+import { IEnderecoRepository } from "repositories/IEnderecoRepository";
+import { Endereco } from "models/EnderecoEntity";
 
 export class UsuarioService implements IUsuarioService {
   public static TEMPO_PARA_EXPIRACAO_DE_TOKEN = '6 hours';
-  constructor(private usuarioRepository: IUsuarioRepository) {}
+  constructor(
+    private usuarioRepository: IUsuarioRepository
+    ) {}
   
-  async criar(dadosUsuario: UsuarioDTO): Promise<UsuarioCriadoDTO> {
+  async criar(dadosUsuario: UsuarioDTO, endereco: Endereco): Promise<UsuarioCriadoDTO> {
     try {
       const usuario = this.usuarioFactory(dadosUsuario);
+      usuario.endereco = endereco;
       const resultado = await this.usuarioRepository.save(usuario);
       return this.omitSenhaEIdUsuario(resultado);
     } catch (error) {
