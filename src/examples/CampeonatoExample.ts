@@ -17,7 +17,7 @@ export const criarCampeonato = async (connection: Connection) => {
     const timeRepo = connection.getCustomRepository(TimeRepository);
 
     const timesService = new TimeService(timeRepo, brasileiraoClient);
-    const partidaService = new PartidaService(partidaRepo, timesService);
+    const partidaService = new PartidaService(partidaRepo, timeRepo);
     const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, partidaService);
     const campeonatoService = new CampeonatoService(campeonatoRepo, timesService, rodadaService);
     
@@ -41,7 +41,7 @@ export const atualizarCampeonato = async (connection: Connection) => {
     const timeRepo = connection.getCustomRepository(TimeRepository);
 
     const timesService = new TimeService(timeRepo, brasileiraoClient);
-    const partidaService = new PartidaService(partidaRepo, timesService);
+    const partidaService = new PartidaService(partidaRepo, timeRepo);
     const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, partidaService);
     const campeonatoService = new CampeonatoService(campeonatoRepo, timesService, rodadaService);
 

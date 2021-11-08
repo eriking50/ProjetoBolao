@@ -1,10 +1,5 @@
-import BrasileiraoClient from "../clients/BrasileiraoClient";
 import { RodadaRepository } from "../repositories/RodadaRepository";
-import { RodadaService } from "../service/RodadaService";
 import { Connection } from "typeorm";
-import { TimeRepository } from "../repositories/TimeRepository";
-import { TimeService } from "../service/TimeService";
-import { PartidaService } from "../service/PartidaService";
 import { PartidaRepository } from "../repositories/PartidaRepository";
 import { UsuarioService } from "../service/UsuarioService";
 import { UsuarioRepository } from "../repositories/UsuarioRepository";
@@ -13,19 +8,13 @@ import { ApostaRepository } from "../repositories/ApostaRepository";
 import { PalpiteDto } from "../@types/dtos/palpiteDto";
 
 export const criarApostas = async (connection: Connection) => {
-    const brasileiraoClient = new BrasileiraoClient();
     const rodadaRepo = connection.getCustomRepository(RodadaRepository);
     const partidaRepo = connection.getCustomRepository(PartidaRepository);
-    const timeRepo = connection.getCustomRepository(TimeRepository);
     const apostaRepo = connection.getCustomRepository(ApostaRepository);
-
-    const timesService = new TimeService(timeRepo, brasileiraoClient);
-    const partidaService = new PartidaService(partidaRepo, timesService);
-    const rodadaService = new RodadaService(brasileiraoClient, rodadaRepo, partidaService);
-
     const usuarioRepo = connection.getCustomRepository(UsuarioRepository);
+
     const usuarioService = new UsuarioService(usuarioRepo);
-    const apostaService = new ApostaService(apostaRepo, usuarioRepo, partidaService, rodadaService);
+    const apostaService = new ApostaService(apostaRepo, usuarioRepo, partidaRepo, rodadaRepo);
 
     const usuarioLogado = await usuarioService.autenticar({
         email: "erik@email.com",

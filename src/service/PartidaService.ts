@@ -1,13 +1,13 @@
+import { ITimeRepository } from "repositories/ITimeRepository";
 import { PartidaResponse } from "../@types/dtos/brasileicaoClientDTO";
 import { Partida } from "../models/PartidaEntity";
 import { IPartidaRepository } from "../repositories/IPartidaRepository";
 import { IPartidaService } from "./IPartidaService";
-import { ITimeService } from "./ITimeService";
 
 export class PartidaService implements IPartidaService {
     constructor(
         private partidaRepository: IPartidaRepository,
-        private timeService: ITimeService
+        private timeRepository: ITimeRepository
         ) {}
 
     buscaPartidaByRodada(rodadaId: number): Promise<Partida[]> {
@@ -43,10 +43,10 @@ export class PartidaService implements IPartidaService {
             partida.status = partidaResponse.status;
             partida.dataRealizacao = new Date(`${partidaResponse.data_realizacao_iso}`);
 
-            const mandante = await this.timeService.buscarTime(partidaResponse.time_mandante.nome_popular);
+            const mandante = await this.timeRepository.findByNome(partidaResponse.time_mandante.nome_popular);
             partida.mandante = mandante;
 
-            const visitante = await this.timeService.buscarTime(partidaResponse.time_visitante.nome_popular);
+            const visitante = await this.timeRepository.findByNome(partidaResponse.time_visitante.nome_popular);
             partida.visitante = visitante;
             partida.placar = partidaResponse.placar;
 

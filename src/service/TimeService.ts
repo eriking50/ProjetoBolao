@@ -10,14 +10,6 @@ export class TimeService implements ITimeService {
         private brasileiraoClient: BrasileiraoClient
         ) {}
 
-    async buscarTime(nome: string): Promise<Time> {
-        try {
-            return await this.timeRepository.findByNome(nome);
-        } catch (error) {
-            throw new Error(`Erro ao buscar dados do time no banco. Motivo ${error.message}`);
-        }
-    }
-
     async atualizarDadosDosTimes(idCampeonato: number): Promise<void> {
         try {
             const tabelaResponse = await this.brasileiraoClient.getTabelaAPI(idCampeonato);
@@ -49,7 +41,7 @@ export class TimeService implements ITimeService {
 
     private async timesFactory(timeResponse: TimeResponse): Promise<Time> {
         try {
-            const timeBD = await this.buscarTime(timeResponse.nome_popular);
+            const timeBD = await this.timeRepository.findByNome(timeResponse.nome_popular);
             if (timeBD) {
                 return this.atualizarTime(timeResponse, timeBD);
             }
