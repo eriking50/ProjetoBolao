@@ -16,6 +16,12 @@ export class ApostaService {
     async criarApostas(usuarioId: number, numeroRodada: number, palpites: PalpiteDto[]): Promise<void> {
         const usuario = await this.usuarioRepository.findById(usuarioId);
         const rodada = await this.rodadaRepository.findByNumeroRodada(numeroRodada);
+        const usuarioRegistrado = usuario.campeonatos.some(campeonato => campeonato.id === rodada.campeonato.id);
+
+        if (!usuarioRegistrado) {
+            return;
+        }
+
         const partidas = await this.partidaRepository.findbyRodadaId(rodada.id);
 
         const apostasPromise = palpites.flatMap(palpite => {

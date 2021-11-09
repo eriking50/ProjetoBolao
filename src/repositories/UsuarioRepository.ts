@@ -11,6 +11,9 @@ export class UsuarioRepository extends Repository<Usuario> implements IUsuarioRe
   }
 
   findById(id: number) {
-    return this.findOne(id);
+    return this.findOne({
+      relations: ['campeonatos'],
+      where: { id }
+    });
   }
 }

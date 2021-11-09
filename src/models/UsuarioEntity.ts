@@ -32,7 +32,7 @@ export class Usuario {
   })
   ativo: boolean;
 
-  @OneToOne(() => Endereco, endereco => endereco.usuario, { cascade: true })
+  @OneToOne(() => Endereco, endereco => endereco.usuario)
   @JoinColumn()
   endereco: Endereco;
 
@@ -42,11 +42,4 @@ export class Usuario {
   @ManyToMany(() => Campeonato, campeonato => campeonato.usuarios)
   @JoinTable()
   campeonatos: Campeonato[];
-
-  adicionarCampeonato(campeonato: Campeonato) {
-    if (!this.campeonatos) {
-      this.campeonatos = [];
-    }
-    this.campeonatos.push(campeonato);
-  }
 }

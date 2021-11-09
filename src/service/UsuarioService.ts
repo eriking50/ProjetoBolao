@@ -11,8 +11,8 @@ import { UsuarioOuSenhaIncorretos } from "../@types/errors/UsuarioOuSenhaIncorre
 import { generateJwtToken } from "../helpers/token";
 import { IUsuarioService } from "./IUsuarioService";
 import { IUsuarioRepository } from "../repositories/IUsuarioRepository";
-import { IEnderecoRepository } from "repositories/IEnderecoRepository";
-import { Endereco } from "models/EnderecoEntity";
+import { Endereco } from "../models/EnderecoEntity";
+import { Campeonato } from "../models/CampeonatoEntity";
 
 export class UsuarioService implements IUsuarioService {
   public static TEMPO_PARA_EXPIRACAO_DE_TOKEN = '6 hours';
@@ -32,6 +32,21 @@ export class UsuarioService implements IUsuarioService {
       }
 
       throw error;
+    }
+  }
+
+  async adicionarCampeonato(usuarioId: number, campeonato: Campeonato): Promise<void> {
+    try {
+      const usuario = await this.usuarioRepository.findById(usuarioId);
+      const campeonatoCadastrado = usuario.campeonatos.some(campeonatoFind => campeonatoFind.id === campeonato.id);
+      if (campeonatoCadastrado) {
+        return;
+      }
+
+      usuario.campeonatos.push(campeonato);
+      await this.usuarioRepository.save(usuario);
+    } catch (error) {
+      throw new Error(`Houve um erro: ${error.message}`);
     }
   }
 

@@ -6,37 +6,23 @@ import { UsuarioRepository } from "../repositories/UsuarioRepository";
 import { ApostaService } from "../service/ApostaService";
 import { ApostaRepository } from "../repositories/ApostaRepository";
 import { PalpiteDto } from "../@types/dtos/palpiteDto";
-import { UsuarioDTO } from "../@types/dtos/usuarioDto";
 import { EnderecoRepository } from "../repositories/EnderecoRepository";
-import { EnderecoService } from "../service/EnderecoService";
-import { AxiosHttpClient } from "../infra/http/AxiosHttpClient";
-import { EnderecoClient } from "../clients/EnderecoClient";
+import { CampeonatoRepository } from "../repositories/CampeonatoRepository";
 
 export const criarApostas = async (connection: Connection) => {
-    const httpClient = new AxiosHttpClient();
-    const enderecoClient = new EnderecoClient(httpClient);
-    
-
     const rodadaRepo = connection.getCustomRepository(RodadaRepository);
     const partidaRepo = connection.getCustomRepository(PartidaRepository);
     const apostaRepo = connection.getCustomRepository(ApostaRepository);
     const usuarioRepo = connection.getCustomRepository(UsuarioRepository);
     const enderecoRepo = connection.getCustomRepository(EnderecoRepository);
+    const campeonatoRepo = connection.getCustomRepository(CampeonatoRepository);
 
     const usuarioService = new UsuarioService(usuarioRepo);
-    const enderecoService = new EnderecoService(enderecoRepo, enderecoClient);
     const apostaService = new ApostaService(apostaRepo, usuarioRepo, partidaRepo, rodadaRepo);
 
-    const dadosUsuario: UsuarioDTO = {
-        nome: 'Erik',
-        email: "erik@email.com",
-        senha: "alguma_senha",
-    };
-
-    const endereco = await enderecoService.buscarCep("33943390", "168");
-    await usuarioService.criar(dadosUsuario, endereco);
-    const usuarioBD = await usuarioRepo.findByEmail("erik@email.com")
-    await enderecoService.adicionarUsuario(usuarioBD, "33943390");
+    const usuarioBD = await usuarioRepo.findByEmail("erik@email.com");
+    const campeonato = await campeonatoRepo.findBySlug("brasileirão-2021")
+    usuarioService.adicionarCampeonato(usuarioBD.id, campeonato);
 
     const usuarioLogado = await usuarioService.autenticar({
         email: "erik@email.com",

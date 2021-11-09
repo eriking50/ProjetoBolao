@@ -6,7 +6,6 @@ import { ICampeonatoRespository } from "./ICampeonatoRepository";
 export class CampeonatoRepository extends Repository<Campeonato> implements ICampeonatoRespository{
     findBySlug(slugFind: string): Promise<Campeonato> {
         return this.findOne({
-            relations: ['usuarios'],
             where: { slug: slugFind }
         });
     }

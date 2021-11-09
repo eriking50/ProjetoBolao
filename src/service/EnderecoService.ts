@@ -1,5 +1,4 @@
-import { EnderecoClient } from "clients/EnderecoClient";
-import { Usuario } from "models/UsuarioEntity";
+import { EnderecoClient } from "../clients/EnderecoClient";
 import { EnderecoDTO } from "../@types/dtos/api-cep/EnderecoDTO";
 import { Endereco } from "../models/EnderecoEntity";
 import { IEnderecoRepository } from "../repositories/IEnderecoRepository";
@@ -11,23 +10,18 @@ export class EnderecoService {
         ) {}
 
     async buscarCep(cep: string, numero: string): Promise<Endereco> {
-        const enderecoDB = await this.enderecoRepository.findbyCep(cep);
-        if (enderecoDB) {
-            return enderecoDB;
-        }
-        const enderecoAPI = await this.enderecoCliente.buscaEnderecoPorCep(cep);
-        const enderecoParaBD = this.factoryEndereco(enderecoAPI, numero);
+        try {
+            const enderecoBD = await this.enderecoRepository.findbyCep(cep);
+            if (enderecoBD && enderecoBD.numero === numero) {
+                return enderecoBD;
+            }
+            const enderecoAPI = await this.enderecoCliente.buscaEnderecoPorCep(cep);
+            const enderecoParaBD = this.factoryEndereco(enderecoAPI, numero);
 
-        return await this.enderecoRepository.save(enderecoParaBD);
-    }
-
-    async adicionarUsuario(usuario: Usuario, cep: string): Promise<Endereco> {
-        const enderecoDB = await this.enderecoRepository.findbyCep(cep);
-        if (enderecoDB) {
-            enderecoDB.usuario = usuario;
-            await this.enderecoRepository.save(enderecoDB);
+            return await this.enderecoRepository.save(enderecoParaBD);
+        } catch (error) {
+            throw new Error(`Houve um erro ao buscar CEP. Motivo: ${error.message}`);
         }
-        return;
     }
 
     private factoryEndereco(enderecoDTO: EnderecoDTO, numero: string): Endereco {

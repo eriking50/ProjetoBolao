@@ -3,8 +3,9 @@ import { ICampeonatoRespository } from "../repositories/ICampeonatoRepository";
 import { Campeonato } from "../models/CampeonatoEntity";
 import { IRodadaService } from "./IRodadaService";
 import { ITimeService } from "./ITimeService";
+import { ICampeonatoService } from "./ICampeonatoService";
 
-export class CampeonatoService {
+export class CampeonatoService implements ICampeonatoService {
     constructor(
         private campeonatoRepository: ICampeonatoRespository,
         private timesService: ITimeService,
@@ -19,10 +20,6 @@ export class CampeonatoService {
         } catch (error) {
             throw new Error(`Erro ao criar campeonato. Motivo: ${error.message}`);
         }
-    }
-    
-    async buscarCampeonatoBySlug(slug: string): Promise<Campeonato> {
-        return await this.campeonatoRepository.findBySlug(slug);
     }
     
     async atualizarDadosCampeonato(campeonato: Campeonato): Promise<void> {
