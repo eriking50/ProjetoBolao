@@ -3,6 +3,5 @@ import { Partida } from "models/PartidaEntity";
 
 
 export interface IPartidaService {
-    partidasFactory(partidaResponse: PartidaResponse): Promise<Partida>;
-    buscaPartidaByRodada(rodadaId: number): Promise<Partida[]>;
+    gerarPartida(partidaResponse: PartidaResponse): Promise<Partida>;
 }

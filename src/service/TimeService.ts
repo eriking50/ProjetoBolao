@@ -24,11 +24,7 @@ export class TimeService implements ITimeService {
             }, this)
             const times = await Promise.all(tabelaPromise);
 
-            const timesParaSalvarPromise = times.map(time => {
-                return this.timeRepository.save(time);
-            }, this)
-
-            Promise.all(timesParaSalvarPromise);
+            await this.timeRepository.save(times);
             return;
         } catch (error) {
             throw new Error(`Erro ao criar times. Motivo ${error.message}`);

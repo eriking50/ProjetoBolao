@@ -2,8 +2,9 @@ import { EnderecoClient } from "../clients/EnderecoClient";
 import { EnderecoDTO } from "../@types/dtos/api-cep/EnderecoDTO";
 import { Endereco } from "../models/EnderecoEntity";
 import { IEnderecoRepository } from "../repositories/IEnderecoRepository";
+import { IEnderecoService } from "./IEnderecoService";
 
-export class EnderecoService {
+export class EnderecoService implements IEnderecoService {
     constructor(
         private enderecoRepository: IEnderecoRepository,
         private enderecoCliente: EnderecoClient

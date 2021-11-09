@@ -10,8 +10,17 @@ export class PartidaService implements IPartidaService {
         private timeRepository: ITimeRepository
         ) {}
 
-    buscaPartidaByRodada(rodadaId: number): Promise<Partida[]> {
-        return this.partidaRepository.findbyRodadaId(rodadaId);
+    async gerarPartida(partidaResponse: PartidaResponse): Promise<Partida> {
+        try {
+            const partidaBD = await this.partidaRepository.findbySlug(partidaResponse.slug);
+            if (partidaBD) {
+                return this.atualizarPartida(partidaResponse, partidaBD);
+            }
+
+            return this.partidasFactory(partidaResponse);
+        } catch (error) {
+            throw new Error(`Houve um erro ao gerar partidas. Motivo: ${error.message}`);
+        }
     }
 
     private async atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Promise<Partida> {
@@ -31,32 +40,23 @@ export class PartidaService implements IPartidaService {
         return partida;
     }
 
-    async partidasFactory(partidaResponse: PartidaResponse): Promise<Partida> {
-        try {
-            const partidaBD = await this.partidaRepository.findbySlug(partidaResponse.slug);
-            if (partidaBD) {
-                return this.atualizarPartida(partidaResponse, partidaBD);
-            }
+    private async partidasFactory(partidaResponse: PartidaResponse): Promise<Partida> {
+        const partida = new Partida();
+        partida.slug = partidaResponse.slug;
+        partida.status = partidaResponse.status;
+        partida.dataRealizacao = new Date(`${partidaResponse.data_realizacao_iso}`);
 
-            const partida = new Partida();
-            partida.slug = partidaResponse.slug;
-            partida.status = partidaResponse.status;
-            partida.dataRealizacao = new Date(`${partidaResponse.data_realizacao_iso}`);
+        const mandante = await this.timeRepository.findByNome(partidaResponse.time_mandante.nome_popular);
+        partida.mandante = mandante;
 
-            const mandante = await this.timeRepository.findByNome(partidaResponse.time_mandante.nome_popular);
-            partida.mandante = mandante;
+        const visitante = await this.timeRepository.findByNome(partidaResponse.time_visitante.nome_popular);
+        partida.visitante = visitante;
+        partida.placar = partidaResponse.placar;
 
-            const visitante = await this.timeRepository.findByNome(partidaResponse.time_visitante.nome_popular);
-            partida.visitante = visitante;
-            partida.placar = partidaResponse.placar;
-
-            if (partidaResponse.status === 'finalizado') {
-                partida.placarMandante = partidaResponse.placar_mandante;
-                partida.placarVisitante = partidaResponse.placar_visitante;
-            }
-            return partida;
-        } catch (error) {
-            throw new Error(`Erro ao gerar partida. Motivo: ${error.message}`);
+        if (partidaResponse.status === 'finalizado') {
+            partida.placarMandante = partidaResponse.placar_mandante;
+            partida.placarVisitante = partidaResponse.placar_visitante;
         }
+        return partida;
     }
 }

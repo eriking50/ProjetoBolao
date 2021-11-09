@@ -13,10 +13,6 @@ export class RodadaService implements IRodadaService {
         private partidaService: IPartidaService
         ) {}
 
-    buscarRodadaByNumero(numeroRodada: number): Promise<Rodada> {
-        return this.rodadaRepository.findByNumeroRodada(numeroRodada);
-    }
-
     async gerarRodadas(campeonato: Campeonato): Promise<void> {
         try {
             const rodadas = await this.buscarRodadaAPI(campeonato);
@@ -34,7 +30,12 @@ export class RodadaService implements IRodadaService {
             });
             const rodadasDaApi = await Promise.all(rodadasPromiseAPI);
 
-            const rodadasPromiseBD = rodadasDaApi.map(rodada => {
+            const rodadasPromiseBD = rodadasDaApi.map(async rodada => {
+                const rodadaBD = await this.rodadaRepository.findBySlug(rodada.slug);
+                if (rodadaBD) {
+                    return this.atualizarRodada(rodada, rodadaBD);
+                }
+
                 return this.rodadasFactory(rodada, campeonato);
             }, this);
 
@@ -56,7 +57,7 @@ export class RodadaService implements IRodadaService {
             rodada.rodada = rodadaResponse.rodada;
         }
         const partidaPromise = rodadaResponse.partidas.map(partida => {
-            return this.partidaService.partidasFactory(partida)
+            return this.partidaService.gerarPartida(partida)
         }, this)
 
         rodada.partidas = await Promise.all(partidaPromise);
@@ -65,28 +66,19 @@ export class RodadaService implements IRodadaService {
     }
 
     private async rodadasFactory(rodadaResponse: RodadaResponse, campeonato: Campeonato): Promise<Rodada> {
-        try {
-            const rodadaBD = await this.rodadaRepository.findBySlug(rodadaResponse.slug);
-            if (rodadaBD) {
-                return this.atualizarRodada(rodadaResponse, rodadaBD);
-            }
+        const rodada = new Rodada();
+        rodada.nome = rodadaResponse.nome;
+        rodada.slug = rodadaResponse.slug;
+        rodada.status = rodadaResponse.status;
+        rodada.rodada = rodadaResponse.rodada;
+        rodada.campeonato = campeonato;
 
-            const rodada = new Rodada();
-            rodada.nome = rodadaResponse.nome;
-            rodada.slug = rodadaResponse.slug;
-            rodada.status = rodadaResponse.status;
-            rodada.rodada = rodadaResponse.rodada;
-            rodada.campeonato = campeonato;
+        const partidasPromise = rodadaResponse.partidas.map(partida => {
+            return this.partidaService.gerarPartida(partida)
+        }, this);
 
-            const partidasPromise = rodadaResponse.partidas.map(partida => {
-                return this.partidaService.partidasFactory(partida)
-            }, this);
-
-            rodada.partidas = await Promise.all(partidasPromise);
-            return rodada;
-        } catch (error) {
-            throw new Error(`Erro ao gerar rodada. Motivo ${error.message}`);
-        }
+        rodada.partidas = await Promise.all(partidasPromise);
+        return rodada;
     }
 
 }
