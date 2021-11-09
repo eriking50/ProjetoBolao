@@ -19,7 +19,7 @@ export class ApostaService {
         const usuarioRegistrado = usuario.campeonatos.some(campeonato => campeonato.id === rodada.campeonato.id);
 
         if (!usuarioRegistrado) {
-            return;
+            throw new Error("O Usuário não está registrado nesse campeonato e não pode fazer apostas");
         }
 
         const partidas = await this.partidaRepository.findbyRodadaId(rodada.id);
