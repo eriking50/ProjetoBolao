@@ -1,3 +1,3 @@
 export interface ITimeService {
-    atualizarDadosDosTimes(idCampeonato: number): Promise<void>;
+    gerarTimes(idCampeonato: number): Promise<void>;
 }

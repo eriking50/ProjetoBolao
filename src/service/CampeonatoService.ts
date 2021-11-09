@@ -24,7 +24,7 @@ export class CampeonatoService implements ICampeonatoService {
     
     async atualizarDadosCampeonato(campeonato: Campeonato): Promise<void> {
         try {
-            await this.timesService.atualizarDadosDosTimes(campeonato.idCampeonatoApiExterna);
+            await this.timesService.gerarTimes(campeonato.idCampeonatoApiExterna);
             await this.rodadaService.gerarRodadas(campeonato);
         } catch (error) {
             throw new Error(`Erro ao atualizar dados do campeonato. Motivo: ${error.message}`);

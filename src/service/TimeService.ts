@@ -10,7 +10,7 @@ export class TimeService implements ITimeService {
         private brasileiraoClient: BrasileiraoClient
         ) {}
 
-    async atualizarDadosDosTimes(idCampeonato: number): Promise<void> {
+    async gerarTimes(idCampeonato: number): Promise<void> {
         try {
             const tabelaResponse = await this.brasileiraoClient.getTabelaAPI(idCampeonato);
 
