@@ -8,10 +8,13 @@ import { UsuarioOuSenhaIncorretos } from '../../@types/errors/UsuarioOuSenhaInco
 
 import * as passwordHelpers from '../../helpers/password';
 import * as tokenHelperes from '../../helpers/token';
+import { EnderecoRepository } from 'repositories/EnderecoRepository';
+import { Endereco } from 'models/EnderecoEntity';
 
 describe('UsuarioService', () => {
   let usuarioDto: UsuarioDTO;
   let usuarioRepository: UsuarioRepository;
+  let enderecoRepository: EnderecoRepository;
   let usuarioService: UsuarioService;
 
   let senha: string;
@@ -37,6 +40,7 @@ describe('UsuarioService', () => {
       senha: faker.internet.password(),
     };
     usuarioRepository = new UsuarioRepository();
+    enderecoRepository = new EnderecoRepository();
     usuarioService = new UsuarioService(usuarioRepository);
 
     dadosAutenticacao = {
@@ -51,8 +55,9 @@ describe('UsuarioService', () => {
 
   describe('criarUsuario', () => {
     it('deve criar um novo usuário com sucesso', async () => {
+      const endereco = new Endereco();
       jest.spyOn(usuarioRepository, 'save').mockResolvedValue(new Usuario());
-      await usuarioService.criar(usuarioDto);
+      await usuarioService.criar(usuarioDto, endereco);
 
       const { senha, ...expectedUsuarioDto } = usuarioDto;
       (expectedUsuarioDto as Usuario).hashSenha = expect.any(String)
@@ -66,9 +71,10 @@ describe('UsuarioService', () => {
     });
 
     it('deve lançar erro caso um usuário já cadastrado for cadastrado novamente', async () => {
+      const endereco = new Endereco();
       const rejectionError = { code: UsuarioJaCadastrado.CODE }
       jest.spyOn(usuarioRepository, 'save').mockRejectedValue(rejectionError);
-      await expect(usuarioService.criar(usuarioDto))
+      await expect(usuarioService.criar(usuarioDto, endereco))
         .rejects
         .toThrow(new UsuarioJaCadastrado());
     });
@@ -76,7 +82,8 @@ describe('UsuarioService', () => {
     it('deve lançar os demais tipos de erros conforme são criados', async () => {
       const rejectionError = new Error('any error thrown');
       jest.spyOn(usuarioRepository, 'save').mockRejectedValue(rejectionError);
-      await expect(usuarioService.criar(usuarioDto))
+      const endereco = new Endereco();
+      await expect(usuarioService.criar(usuarioDto, endereco))
         .rejects
         .toThrow(rejectionError);
     });
