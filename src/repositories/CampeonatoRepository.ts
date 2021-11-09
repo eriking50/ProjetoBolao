@@ -4,10 +4,8 @@ import { ICampeonatoRespository } from "./ICampeonatoRepository";
 
 @EntityRepository(Campeonato)
 export class CampeonatoRepository extends Repository<Campeonato> implements ICampeonatoRespository{
-    findBySlug(slugFind: string): Promise<Campeonato> {
-        return this.findOne({
-            where: { slug: slugFind }
-        });
+    findBySlug(slug: string): Promise<Campeonato> {
+        return this.findOne(slug);
     }
 
     findById(id: number) {
