@@ -9,7 +9,10 @@ export class RodadaRepository extends Repository<Rodada> implements IRodadaRepos
     }
 
     findByNumeroRodada(numeroRodada: number): Promise<Rodada> {
-        return this.findOne({ where: { rodada: numeroRodada } });
+        return this.findOne({
+            relations: ['campeonato'],
+            where: { rodada: numeroRodada }
+        });
     }
     
 }

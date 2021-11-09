@@ -6,7 +6,6 @@ import { UsuarioRepository } from "../repositories/UsuarioRepository";
 import { ApostaService } from "../service/ApostaService";
 import { ApostaRepository } from "../repositories/ApostaRepository";
 import { PalpiteDto } from "../@types/dtos/palpiteDto";
-import { EnderecoRepository } from "../repositories/EnderecoRepository";
 import { CampeonatoRepository } from "../repositories/CampeonatoRepository";
 
 export const criarApostas = async (connection: Connection) => {
@@ -14,14 +13,13 @@ export const criarApostas = async (connection: Connection) => {
     const partidaRepo = connection.getCustomRepository(PartidaRepository);
     const apostaRepo = connection.getCustomRepository(ApostaRepository);
     const usuarioRepo = connection.getCustomRepository(UsuarioRepository);
-    const enderecoRepo = connection.getCustomRepository(EnderecoRepository);
     const campeonatoRepo = connection.getCustomRepository(CampeonatoRepository);
 
     const usuarioService = new UsuarioService(usuarioRepo);
     const apostaService = new ApostaService(apostaRepo, usuarioRepo, partidaRepo, rodadaRepo);
 
     const usuarioBD = await usuarioRepo.findByEmail("erik@email.com");
-    const campeonato = await campeonatoRepo.findBySlug("brasileirão-2021")
+    const campeonato = await campeonatoRepo.findBySlug("brasileirão-2021");
     usuarioService.adicionarCampeonato(usuarioBD.id, campeonato);
 
     const usuarioLogado = await usuarioService.autenticar({
