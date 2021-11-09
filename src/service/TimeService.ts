@@ -13,16 +13,22 @@ export class TimeService implements ITimeService {
     async atualizarDadosDosTimes(idCampeonato: number): Promise<void> {
         try {
             const tabelaResponse = await this.brasileiraoClient.getTabelaAPI(idCampeonato);
-            const tabelaPromise = tabelaResponse.map(({time}) => {
+
+            const tabelaPromise = tabelaResponse.map(async ({time}) => {
+                const timeBD = await this.timeRepository.findByNome(time.nome_popular);
+                if (timeBD) {
+                    return this.atualizarTime(time, timeBD);
+                }
+
                 return this.timesFactory(time);
             }, this)
             const times = await Promise.all(tabelaPromise);
 
-            const timesNaoCadastradosPromise = times.map(timeNaoCadastrado => {
-                return this.timeRepository.save(timeNaoCadastrado);
+            const timesParaSalvarPromise = times.map(time => {
+                return this.timeRepository.save(time);
             }, this)
 
-            Promise.all(timesNaoCadastradosPromise);
+            Promise.all(timesParaSalvarPromise);
             return;
         } catch (error) {
             throw new Error(`Erro ao criar times. Motivo ${error.message}`);
@@ -39,20 +45,11 @@ export class TimeService implements ITimeService {
         return time;
     }
 
-    private async timesFactory(timeResponse: TimeResponse): Promise<Time> {
-        try {
-            const timeBD = await this.timeRepository.findByNome(timeResponse.nome_popular);
-            if (timeBD) {
-                return this.atualizarTime(timeResponse, timeBD);
-            }
-
-            const time = new Time();
-            time.nome = timeResponse.nome_popular;
-            time.escudo = timeResponse.escudo;
-            time.sigla = timeResponse.sigla;
-            return time;
-        } catch (error) {
-            throw new Error(`Erro ao gerar time. Motivo ${error.message}`);
-        }
+    private timesFactory(timeResponse: TimeResponse): Time {
+        const time = new Time();
+        time.nome = timeResponse.nome_popular;
+        time.escudo = timeResponse.escudo;
+        time.sigla = timeResponse.sigla;
+        return time;
     }
 }
