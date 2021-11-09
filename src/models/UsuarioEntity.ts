@@ -32,14 +32,13 @@ export class Usuario {
   })
   ativo: boolean;
 
-  @OneToOne(() => Endereco, endereco => endereco.usuario)
-  @JoinColumn()
+  @OneToOne(() => Endereco, endereco => endereco.usuario, {cascade: true, onDelete: 'CASCADE'})
   endereco: Endereco;
 
-  @OneToMany(() => Aposta, aposta => aposta.usuario)
+  @OneToMany(() => Aposta, aposta => aposta.usuario, {cascade: true})
   apostas: Aposta[];
   
-  @ManyToMany(() => Campeonato, campeonato => campeonato.usuarios)
+  @ManyToMany(() => Campeonato, campeonato => campeonato.usuarios, {cascade: true})
   @JoinTable()
   campeonatos: Campeonato[];
 }

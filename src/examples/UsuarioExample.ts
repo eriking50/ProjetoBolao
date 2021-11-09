@@ -30,9 +30,9 @@ export const criaUsuario = async (connection: Connection) => {
   const enderecoService = new EnderecoService(enderecoRepo, enderecoClient);
 
   const dadosUsuario: UsuarioDTO = {
-    nome: 'paulo henrique',
-    email: 'paulo@rarolabs.com.br',
-    senha: 'minha senha super segura'
+    nome: 'Erik',
+    email: 'erik@email.com',
+    senha: "alguma_senha"
   };
 
   const endereco = await enderecoService.buscarCep("33943390", "168");

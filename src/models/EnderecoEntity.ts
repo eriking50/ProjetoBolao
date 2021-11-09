@@ -37,5 +37,6 @@ export class Endereco {
     estado: string;
 
     @OneToOne(() => Usuario, usuario => usuario.endereco)
+    @JoinColumn()
     usuario: Usuario;
 }
