@@ -8,14 +8,17 @@ import { UsuarioOuSenhaIncorretos } from '../../@types/errors/UsuarioOuSenhaInco
 
 import * as passwordHelpers from '../../helpers/password';
 import * as tokenHelperes from '../../helpers/token';
-import { EnderecoRepository } from 'repositories/EnderecoRepository';
-import { Endereco } from 'models/EnderecoEntity';
+import { Endereco } from '../../models/EnderecoEntity';
+import { Campeonato } from '../../models/CampeonatoEntity';
 
 describe('UsuarioService', () => {
   let usuarioDto: UsuarioDTO;
   let usuarioRepository: UsuarioRepository;
-  let enderecoRepository: EnderecoRepository;
   let usuarioService: UsuarioService;
+  let endereco: Endereco;
+  let usuarioId: number;
+  let usuarioCampeonato: Usuario;
+  let campeonato: Campeonato;
 
   let senha: string;
   let token: string;
@@ -40,8 +43,17 @@ describe('UsuarioService', () => {
       senha: faker.internet.password(),
     };
     usuarioRepository = new UsuarioRepository();
-    enderecoRepository = new EnderecoRepository();
     usuarioService = new UsuarioService(usuarioRepository);
+    endereco = new Endereco();
+    usuarioCampeonato = new Usuario();
+    usuarioCampeonato.nome = faker.name.firstName();
+    usuarioCampeonato.email = faker.internet.email();
+    usuarioCampeonato.campeonatos = [];
+
+    campeonato = new Campeonato();
+    campeonato.nome = faker.lorem.word();
+    campeonato.id = faker.datatype.number();
+
 
     dadosAutenticacao = {
       email: faker.internet.email(),
@@ -55,13 +67,12 @@ describe('UsuarioService', () => {
 
   describe('criarUsuario', () => {
     it('deve criar um novo usuário com sucesso', async () => {
-      const endereco = new Endereco();
       jest.spyOn(usuarioRepository, 'save').mockResolvedValue(new Usuario());
       await usuarioService.criar(usuarioDto, endereco);
 
       const { senha, ...expectedUsuarioDto } = usuarioDto;
       (expectedUsuarioDto as Usuario).hashSenha = expect.any(String)
-      expect(usuarioRepository.save).toHaveBeenCalledWith(expectedUsuarioDto);
+      expect(usuarioRepository.save).toHaveBeenCalledWith({...expectedUsuarioDto, endereco});
       expect(usuarioRepository.save).not.toHaveBeenCalledWith(
         expect.objectContaining({ hashSenha: usuarioDto.senha })
       );
@@ -71,7 +82,6 @@ describe('UsuarioService', () => {
     });
 
     it('deve lançar erro caso um usuário já cadastrado for cadastrado novamente', async () => {
-      const endereco = new Endereco();
       const rejectionError = { code: UsuarioJaCadastrado.CODE }
       jest.spyOn(usuarioRepository, 'save').mockRejectedValue(rejectionError);
       await expect(usuarioService.criar(usuarioDto, endereco))
@@ -248,5 +258,32 @@ describe('UsuarioService', () => {
         { ativo: false }
       );
     });
+  });
+
+  describe("adicionarCampeonato", () => {
+    it("Deve retornar um erro caso não consiga encontrar o usuário no banco", async () => {
+      jest.spyOn(usuarioRepository, "findById").mockRejectedValue(new Error("Não foi possivel buscar dados do usuário no banco"));
+
+      await expect(usuarioService.adicionarCampeonato(usuarioId, campeonato)).rejects.toThrow();
+    })
+    it("Deve ignorar e retornar vazio caso o usuário já esteja cadastrado no campeonato", async () => {
+      usuarioCampeonato.campeonatos = [campeonato];
+      jest.spyOn(usuarioRepository, "findById").mockResolvedValue(usuarioCampeonato);
+
+      await expect(usuarioService.adicionarCampeonato(usuarioId, campeonato)).resolves.not.toBeDefined();
+    })
+    it("Deve retornar um erro caso não consiga salvar o usuário no banco", async () => {
+      jest.spyOn(usuarioRepository, "findById").mockResolvedValue(usuarioCampeonato);
+      jest.spyOn(usuarioRepository, "save").mockRejectedValue(new Error("Não foi possivel salvar dados do usuario no banco"));
+
+      await expect(usuarioService.adicionarCampeonato(usuarioId, campeonato)).rejects.toThrow();
+    })
+    it("Deve adicionar corretamente um campeonato ao usuário", async () => {
+      jest.spyOn(usuarioRepository, "findById").mockResolvedValue(usuarioCampeonato);
+      jest.spyOn(usuarioRepository, "save").mockResolvedValue(usuarioCampeonato);
+
+      await expect(usuarioService.adicionarCampeonato(usuarioId, campeonato)).resolves.not.toBeDefined();
+      expect(usuarioRepository.save).toBeCalled();
+    })
   });
 });

@@ -7,16 +7,12 @@ import { IEnderecoService } from "./IEnderecoService";
 export class EnderecoService implements IEnderecoService {
     constructor(
         private enderecoRepository: IEnderecoRepository,
-        private enderecoCliente: EnderecoClient
+        private enderecoClient: EnderecoClient
         ) {}
 
     async buscarCep(cep: string, numero: string): Promise<Endereco> {
         try {
-            const enderecoBD = await this.enderecoRepository.findbyCep(cep);
-            if (enderecoBD && enderecoBD.numero === numero) {
-                return enderecoBD;
-            }
-            const enderecoAPI = await this.enderecoCliente.buscaEnderecoPorCep(cep);
+            const enderecoAPI = await this.enderecoClient.buscaEnderecoPorCep(cep);
             const enderecoParaBD = this.factoryEndereco(enderecoAPI, numero);
 
             return await this.enderecoRepository.save(enderecoParaBD);
