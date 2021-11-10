@@ -45,6 +45,6 @@ export const criarApostas = async (connection: Connection) => {
 
     const usuario = await usuarioRepo.findByEmail(usuarioLogado.email);
 
-    await apostaService.criarApostas(usuario.id, 1, palpites);
+    await apostaService.gerarApostas(usuario.id, 1, palpites);
 
 };

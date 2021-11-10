@@ -4,8 +4,9 @@ import { Aposta } from "../models/ApostaEntity";
 import { IApostaRepository } from "../repositories/IApostaRepository";
 import { IRodadaRepository } from "../repositories/IRodadaRepository";
 import { IPartidaRepository } from "../repositories/IPartidaRepository";
+import { IApostaService } from "./IApostaService";
 
-export class ApostaService {
+export class ApostaService implements IApostaService {
     constructor(
         private apostaRepository: IApostaRepository,
         private usuarioRepository: IUsuarioRepository,
@@ -13,7 +14,7 @@ export class ApostaService {
         private rodadaRepository: IRodadaRepository,
         ) {}
 
-    async criarApostas(usuarioId: number, numeroRodada: number, palpites: PalpiteDto[]): Promise<void> {
+    async gerarApostas(usuarioId: number, numeroRodada: number, palpites: PalpiteDto[]): Promise<void> {
         const usuario = await this.usuarioRepository.findById(usuarioId);
         const rodada = await this.rodadaRepository.findByNumeroRodada(numeroRodada);
         const usuarioRegistrado = usuario.campeonatos.some(campeonato => campeonato.id === rodada.campeonato.id);
