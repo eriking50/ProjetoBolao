@@ -1,7 +1,7 @@
-import { PartidaResponse } from "../@types/dtos/brasileicaoClientDTO";
+import { PartidaDTO } from "../@types/dtos/brasileicaoClientDTO";
 import { Partida } from "models/PartidaEntity";
 
 
 export interface IPartidaService {
-    gerarPartida(partidaResponse: PartidaResponse): Promise<Partida>;
+    gerarPartida(partidaResponse: PartidaDTO): Promise<Partida>;
 }

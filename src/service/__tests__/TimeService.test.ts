@@ -2,7 +2,7 @@ import BrasileiraoClient from '../../clients/BrasileiraoClient';
 import * as faker from 'faker';
 import { TimeRepository } from '../../repositories/TimeRepository';
 import { TimeService } from '../../service/TimeService';
-import { TabelaResponse } from '../../@types/dtos/brasileicaoClientDTO';
+import { TabelaDTO } from '../../@types/dtos/brasileicaoClientDTO';
 import { Time } from '../../models/TimeEntity';
 
 describe("TimeService", () => {
@@ -11,7 +11,7 @@ describe("TimeService", () => {
     let timeService: TimeService;
 
     let idCampeonato: number;
-    let tabelaResponse: TabelaResponse;
+    let tabelaResponse: TabelaDTO;
     let time: Time;
     let timeAtualizar: Time;
 

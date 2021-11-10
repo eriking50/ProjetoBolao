@@ -1,5 +1,5 @@
 import { ITimeRepository } from "repositories/ITimeRepository";
-import { PartidaResponse } from "../@types/dtos/brasileicaoClientDTO";
+import { PartidaDTO } from "../@types/dtos/brasileicaoClientDTO";
 import { Partida } from "../models/PartidaEntity";
 import { IPartidaRepository } from "../repositories/IPartidaRepository";
 import { IPartidaService } from "./IPartidaService";
@@ -10,7 +10,7 @@ export class PartidaService implements IPartidaService {
         private timeRepository: ITimeRepository
         ) {}
 
-    async gerarPartida(partidaResponse: PartidaResponse): Promise<Partida> {
+    async gerarPartida(partidaResponse: PartidaDTO): Promise<Partida> {
         try {
             const partidaBD = await this.partidaRepository.findbySlug(partidaResponse.slug);
             if (partidaBD) {
@@ -23,7 +23,7 @@ export class PartidaService implements IPartidaService {
         }
     }
 
-    private async atualizarPartida(partidaResponse: PartidaResponse, partida: Partida): Promise<Partida> {
+    private async atualizarPartida(partidaResponse: PartidaDTO, partida: Partida): Promise<Partida> {
         if (partidaResponse.status !== partida.status) {
             partida.status = partidaResponse.status;
             partida.placarMandante = partidaResponse.placar_mandante;
@@ -42,7 +42,7 @@ export class PartidaService implements IPartidaService {
         return partida;
     }
 
-    private async partidasFactory(partidaResponse: PartidaResponse): Promise<Partida> {
+    private async partidasFactory(partidaResponse: PartidaDTO): Promise<Partida> {
         const partida = new Partida();
         partida.slug = partidaResponse.slug;
         partida.status = partidaResponse.status;

@@ -1,15 +1,15 @@
 
-export type TimeResponse = {
+export type TimeDTO = {
     time_id: number,
     nome_popular: string,
     sigla: string,
     escudo: string,
 }
 
-export type TabelaResponse = {
+export type TabelaDTO = {
     posicao: number,
     pontos: number,
-    time: TimeResponse,
+    time: TimeDTO,
     jogos: number,
     vitorias: number,
     empates: number,
@@ -40,35 +40,35 @@ type Estadio = {
     nome_popular: string
 }
 
-export type PartidaResponse = {
+export type PartidaDTO = {
     partida_id: number,
     campeonato: Campeonato,
     placar: string,
-    time_mandante: TimeResponse,
-    time_visitante: TimeResponse,
+    time_mandante: TimeDTO,
+    time_visitante: TimeDTO,
     placar_mandante: number,
     placar_visitante: number,
     status: string,
     slug: string,
     data_realizacao: string,
     hora_realizacao: string,
-    data_realizacao_iso: Date
-    estadio: Estadio;
-    _link: string;
+    data_realizacao_iso: Date,
+    estadio: Estadio,
+    _link: string,
 }
 
-export type RodadaResponse = {
+export type RodadaDTO = {
     nome: string,
     slug: string,
     rodada: number,
     status: string,
     proxima_rodada: DadosRodada,
     rodada_anterior: DadosRodada,
-    partidas: PartidaResponse[],
+    partidas: PartidaDTO[],
     _link: string
 }
 
-export type CampeonatoResponse = {
+export type CampeonatoDTO = {
     nome: string,
     slug: string,
     rodada: number,

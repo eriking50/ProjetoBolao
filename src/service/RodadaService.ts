@@ -1,6 +1,6 @@
 import { Rodada } from "../models/RodadaEntity";
 import BrasileiraoClient from "../clients/BrasileiraoClient";
-import { RodadaResponse } from "../@types/dtos/brasileicaoClientDTO";
+import { RodadaDTO } from "../@types/dtos/brasileicaoClientDTO";
 import { IRodadaRepository } from "../repositories/IRodadaRepository";
 import { Campeonato } from "../models/CampeonatoEntity";
 import { IPartidaService } from "./IPartidaService";
@@ -47,7 +47,7 @@ export class RodadaService implements IRodadaService {
         }
     }
 
-    private async atualizarRodada(rodadaResponse: RodadaResponse, rodada: Rodada): Promise<Rodada> {
+    private async atualizarRodada(rodadaResponse: RodadaDTO, rodada: Rodada): Promise<Rodada> {
         if (rodada.status !== rodadaResponse.status) {
             rodada.status = rodadaResponse.status;
         }
@@ -66,7 +66,7 @@ export class RodadaService implements IRodadaService {
         return rodada
     }
 
-    private async rodadasFactory(rodadaResponse: RodadaResponse, campeonato: Campeonato): Promise<Rodada> {
+    private async rodadasFactory(rodadaResponse: RodadaDTO, campeonato: Campeonato): Promise<Rodada> {
         const rodada = new Rodada();
         rodada.nome = rodadaResponse.nome;
         rodada.slug = rodadaResponse.slug;

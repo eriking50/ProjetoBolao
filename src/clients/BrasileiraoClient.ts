@@ -1,13 +1,10 @@
-import { TabelaResponse, RodadaResponse, CampeonatoResponse } from "../@types/dtos/brasileicaoClientDTO";
+import { TabelaDTO, RodadaDTO, CampeonatoDTO } from "../@types/dtos/brasileicaoClientDTO";
 import axios from "axios"
 
-const URL_BRASILEIRAO = "https://us-central1-small-talk-3972f.cloudfunctions.net/v1/v1/campeonatos/";
-
 export default class BrasileiraoClient {
-
-    public async getTabelaAPI(idCampeonato: number): Promise<TabelaResponse[]> {
+    public async getTabelaAPI(idCampeonato: number): Promise<TabelaDTO[]> {
         try {
-            const tabela = await axios.get<TabelaResponse[]>(`${URL_BRASILEIRAO}/${idCampeonato}/tabela`, {
+            const tabela = await axios.get<TabelaDTO[]>(`${process.env.URL_BRASILEIRAO}/${idCampeonato}/tabela`, {
                 headers: {Authorization: `bearer ${process.env.TOKEN}`},
             });
             return tabela.data;
@@ -16,9 +13,9 @@ export default class BrasileiraoClient {
         }
     }
 
-    public async getRodadasAPI(numeroRodada: number, idCampeonato: number): Promise<RodadaResponse> {
+    public async getRodadasAPI(numeroRodada: number, idCampeonato: number): Promise<RodadaDTO> {
         try {
-            const response = await axios.get<RodadaResponse>(`${URL_BRASILEIRAO}/${idCampeonato}/rodadas/${numeroRodada}`, {
+            const response = await axios.get<RodadaDTO>(`${process.env.URL_BRASILEIRAO}/${idCampeonato}/rodadas/${numeroRodada}`, {
                 headers: {Authorization: `bearer ${process.env.TOKEN}`},
             });
             return response.data;
@@ -27,9 +24,9 @@ export default class BrasileiraoClient {
         }
     }
 
-    public async getDadosCampeonatoAPI(idCampeonato: number): Promise<CampeonatoResponse[]> {
+    public async getDadosCampeonatoAPI(idCampeonato: number): Promise<CampeonatoDTO[]> {
         try {
-            const campeonatoResponse = await axios.get<CampeonatoResponse[]>(`${URL_BRASILEIRAO}/${idCampeonato}/rodadas/`, {
+            const campeonatoResponse = await axios.get<CampeonatoDTO[]>(`${process.env.URL_BRASILEIRAO}/${idCampeonato}/rodadas/`, {
                 headers:{Authorization: `bearer ${process.env.TOKEN}`}
             });
             

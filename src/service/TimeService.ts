@@ -1,6 +1,6 @@
 import { ITimeRepository } from "../repositories/ITimeRepository";
 import BrasileiraoClient from "../clients/BrasileiraoClient";
-import { TimeResponse } from "../@types/dtos/brasileicaoClientDTO";
+import { TimeDTO } from "../@types/dtos/brasileicaoClientDTO";
 import { Time } from "../models/TimeEntity";
 import { ITimeService } from "./ITimeService";
 
@@ -31,7 +31,7 @@ export class TimeService implements ITimeService {
         }
     }
 
-    private atualizarTime(timeResponse: TimeResponse, time: Time): Time {
+    private atualizarTime(timeResponse: TimeDTO, time: Time): Time {
         if (timeResponse.sigla !== time.sigla) {
             time.sigla = timeResponse.sigla;
         }
@@ -41,7 +41,7 @@ export class TimeService implements ITimeService {
         return time;
     }
 
-    private timesFactory(timeResponse: TimeResponse): Time {
+    private timesFactory(timeResponse: TimeDTO): Time {
         const time = new Time();
         time.nome = timeResponse.nome_popular;
         time.escudo = timeResponse.escudo;

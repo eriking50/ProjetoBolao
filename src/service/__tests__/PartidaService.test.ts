@@ -1,4 +1,4 @@
-import { PartidaResponse } from '../../@types/dtos/brasileicaoClientDTO';
+import { PartidaDTO } from '../../@types/dtos/brasileicaoClientDTO';
 import * as faker from 'faker';
 import { Partida } from '../../models/PartidaEntity';
 import { PartidaRepository } from '../../repositories/PartidaRepository';
@@ -12,7 +12,7 @@ describe("PartidaService", () => {
     let timeRepo: TimeRepository;
     let partidaService: PartidaService;
     let partida: Partida;
-    let partidaResponse: PartidaResponse;
+    let partidaResponse: PartidaDTO;
     let mandante: Time;
     let visitante: Time;
 

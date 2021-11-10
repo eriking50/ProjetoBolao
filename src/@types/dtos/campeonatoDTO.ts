@@ -7,5 +7,3 @@ export interface CampeonatoDTO {
     logo: string,
     idCampeonatoApiExterna: number,
 }
-
-export type CampeonatoCriadoDTO = Omit<CampeonatoDTO, 'id'>;
