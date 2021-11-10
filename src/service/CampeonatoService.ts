@@ -12,7 +12,7 @@ export class CampeonatoService implements ICampeonatoService {
         private rodadaService: IRodadaService
         ) {}
 
-    async criar(dadosCampeonato: CampeonatoDTO): Promise<Campeonato> {
+    async gerarCampeonato(dadosCampeonato: CampeonatoDTO): Promise<Campeonato> {
         try {
             const campeonatoClasse = await this.campeonatoFactory(dadosCampeonato);
             const campeonatoBD = await this.campeonatoRepository.save(campeonatoClasse);
@@ -26,6 +26,7 @@ export class CampeonatoService implements ICampeonatoService {
         try {
             await this.timesService.gerarTimes(campeonato.idCampeonatoApiExterna);
             await this.rodadaService.gerarRodadas(campeonato);
+            return;
         } catch (error) {
             throw new Error(`Erro ao atualizar dados do campeonato. Motivo: ${error.message}`);
         }

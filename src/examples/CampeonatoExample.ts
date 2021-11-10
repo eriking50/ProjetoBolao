@@ -30,7 +30,7 @@ export const criarCampeonato = async (connection: Connection) => {
         idCampeonatoApiExterna: 10,
     }
     
-    const campeonato = await campeonatoService.criar(dadosCampeonato);
+    const campeonato = await campeonatoService.gerarCampeonato(dadosCampeonato);
 };
 
 export const atualizarCampeonato = async (connection: Connection) => {
