@@ -82,7 +82,7 @@ describe("TimeService", () => {
             expect(timesRepo.save).toHaveBeenCalled();
             expect(timesRepo.save).toHaveBeenCalledWith([time]);
         });
-        it("Deve conferir os dados do time do banco com os recebidos e caso haja dados difernetes, alterar o time e salvar no banco", async () => {
+        it("Deve conferir os dados do time do banco com os recebidos e caso haja dados diferentes, alterar o time e salvar no banco", async () => {
             jest.spyOn(brasileiraoClient, "getTabelaAPI").mockResolvedValue([tabelaResponse]);
             jest.spyOn(timesRepo, "findByNome").mockResolvedValue(timeAtualizar);
             jest.spyOn(timesRepo, "save").mockResolvedValue(time);
