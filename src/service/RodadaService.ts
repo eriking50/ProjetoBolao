@@ -16,7 +16,8 @@ export class RodadaService implements IRodadaService {
     async gerarRodadas(campeonato: Campeonato): Promise<void> {
         try {
             const rodadas = await this.buscarRodadaAPI(campeonato);
-            await this.rodadaRepository.save(rodadas)
+            await this.rodadaRepository.save(rodadas);
+            return;
         } catch (error) {
             throw new Error(`Erro ao gerar rodadas: Motivo ${error.message}`);
         }

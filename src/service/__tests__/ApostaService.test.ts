@@ -89,19 +89,19 @@ describe("ApostaService", () => {
             jest.spyOn(usuarioRepo, "findById").mockRejectedValue(new Error("Não foi possivel buscar dados do usuario no banco"));
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
-        })
+        });
         it("Deve retornar um erro caso não consiga buscar a rodada no banco de dados", async () => {
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
             jest.spyOn(rodadaRepo, "findByNumeroRodada").mockRejectedValue(new Error("Não foi possivel buscar dados da rodada no banco"));
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
-        })
+        });
         it("Deve retornar um erro caso o usuário não esteja cadastrado no campeonato que se deseja apostar", async () => {
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
             jest.spyOn(rodadaRepo, "findByNumeroRodada").mockResolvedValue(rodada);
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
-        })
+        });
         it("Deve retornar um erro caso não consiga buscar as partidas no banco de dados", async () => {
             usuario.campeonatos = [campeonato];
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
@@ -109,7 +109,7 @@ describe("ApostaService", () => {
             jest.spyOn(partidaRepo, "findbyRodadaId").mockRejectedValue(new Error("Não foi possivel buscar dados das partidas no banco"));
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
-        })
+        });
         it("Deve retornar um erro caso não consiga buscar as apostas no banco de dados", async () => {
             usuario.campeonatos = [campeonato];
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
@@ -118,7 +118,7 @@ describe("ApostaService", () => {
             jest.spyOn(apostaRepo, "findbyUsuarioAndPartida").mockRejectedValue(new Error("Não foi possivel buscar dados da aposta no banco"));
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
-        })
+        });
         it("Deve retornar um erro caso não consiga salvar as apostas no banco de dados", async () => {
             usuario.campeonatos = [campeonato];
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
@@ -128,7 +128,7 @@ describe("ApostaService", () => {
             jest.spyOn(apostaRepo, "save").mockRejectedValue(new Error("Não foi possível salvar os dados no banco"));
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
-        })
+        });
         it("Deve salvar corretamente as aposta no banco de dados", async () => {
             usuario.campeonatos = [campeonato];
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
@@ -139,7 +139,7 @@ describe("ApostaService", () => {
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).resolves.not.toBeDefined();
             expect(apostaRepo.save).toBeCalled();
-        })
+        });
         it("Não deve salvar nada no banco caso não haja apostas novas", async () => {
             usuario.campeonatos = [campeonato];
             partida.id = faker.datatype.number();
@@ -149,7 +149,7 @@ describe("ApostaService", () => {
             jest.spyOn(apostaRepo, "findbyUsuarioAndPartida").mockResolvedValue(undefined);
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).resolves.not.toBeDefined();
-        })
+        });
         it("Não deve fazer nada e retornar a aposta caso já tenha feito uma aposta para esta partida", async () => {
             usuario.campeonatos = [campeonato];
             jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
@@ -158,6 +158,6 @@ describe("ApostaService", () => {
             jest.spyOn(apostaRepo, "findbyUsuarioAndPartida").mockResolvedValue(aposta);
 
             await expect(apostaService.criarApostas(usuarioId, numeroRodada, [palpite])).resolves.not.toBeDefined();
-        })
+        });
     });
 });

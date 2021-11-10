@@ -36,6 +36,8 @@ export class PartidaService implements IPartidaService {
             if (new Date(partidaResponse.data_realizacao_iso).getTime() !== partida.dataRealizacao.getTime()) {
                 partida.dataRealizacao = partidaResponse.data_realizacao_iso;
             }
+        } else if (partidaResponse.data_realizacao_iso) {
+            partida.dataRealizacao = partidaResponse.data_realizacao_iso;
         }
         return partida;
     }
@@ -44,7 +46,7 @@ export class PartidaService implements IPartidaService {
         const partida = new Partida();
         partida.slug = partidaResponse.slug;
         partida.status = partidaResponse.status;
-        partida.dataRealizacao = new Date(`${partidaResponse.data_realizacao_iso}`);
+        partida.dataRealizacao = partidaResponse.data_realizacao_iso;
 
         const mandante = await this.timeRepository.findByNome(partidaResponse.time_mandante.nome_popular);
         partida.mandante = mandante;

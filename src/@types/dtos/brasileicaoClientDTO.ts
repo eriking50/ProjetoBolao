@@ -30,7 +30,7 @@ type DadosRodada = {
 }
 
 type Campeonato = {
-    campeonato_id: 10,
+    campeonato_id: number,
     nome: string,
     slug: string
 }

@@ -65,14 +65,14 @@ describe("TimeService", () => {
             jest.spyOn(timesRepo, "findByNome").mockRejectedValue(new Error("Erro ao buscar times no banco"))
             
             await expect(timeService.gerarTimes(idCampeonato)).rejects.toThrow();
-        })
+        });
         it("Deve retornar um erro caso não consiga salvar dados no banco", async () => {
             jest.spyOn(brasileiraoClient, "getTabelaAPI").mockResolvedValue([tabelaResponse]);
             jest.spyOn(timesRepo, "findByNome").mockResolvedValue(undefined);
             jest.spyOn(timesRepo, "save").mockRejectedValue(new Error("Erro ao salvar times na api"));
             
             await expect(timeService.gerarTimes(idCampeonato)).rejects.toThrow();
-        })
+        });
         it("Deve salvar corretamente um time que ainda não está salva no banco de dados", async () => {
             jest.spyOn(brasileiraoClient, "getTabelaAPI").mockResolvedValue([tabelaResponse]);
             jest.spyOn(timesRepo, "findByNome").mockResolvedValue(undefined);
@@ -81,7 +81,7 @@ describe("TimeService", () => {
             await expect(timeService.gerarTimes(idCampeonato)).resolves.not.toBeDefined();
             expect(timesRepo.save).toHaveBeenCalled();
             expect(timesRepo.save).toHaveBeenCalledWith([time]);
-        })
+        });
         it("Deve conferir os dados do time do banco com os recebidos e caso haja dados difernetes, alterar o time e salvar no banco", async () => {
             jest.spyOn(brasileiraoClient, "getTabelaAPI").mockResolvedValue([tabelaResponse]);
             jest.spyOn(timesRepo, "findByNome").mockResolvedValue(timeAtualizar);
@@ -90,7 +90,7 @@ describe("TimeService", () => {
             await expect(timeService.gerarTimes(idCampeonato)).resolves.not.toBeDefined();
             expect(timesRepo.save).toHaveBeenCalled();
             expect(timesRepo.save).toHaveBeenCalledWith([time]);
-        })
+        });
         it("Deve conferir os dados do time do banco com os recebidos e caso não haja dados diferentes, apenas salvar o time no banco", async () => {
             jest.spyOn(brasileiraoClient, "getTabelaAPI").mockResolvedValue([tabelaResponse]);
             jest.spyOn(timesRepo, "findByNome").mockResolvedValue(time);
@@ -99,6 +99,6 @@ describe("TimeService", () => {
             await expect(timeService.gerarTimes(idCampeonato)).resolves.not.toBeDefined();
             expect(timesRepo.save).toHaveBeenCalled();
             expect(timesRepo.save).toHaveBeenCalledWith([time]);
-        })
+        });
     });
 });
