@@ -25,7 +25,7 @@ export const criarCampeonato = async (connection: Connection) => {
         nome: "Campeonato Brasileiro",
         slug: "brasileirão-2021",
         nomePopular: "Brasileirão",
-        status: "algum status",
+        status: "ativo",
         logo: "BRLOGO",
         idCampeonatoApiExterna: 10,
     }

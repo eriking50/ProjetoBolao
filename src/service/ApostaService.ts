@@ -20,6 +20,9 @@ export class ApostaService implements IApostaService {
     async gerarApostas(usuarioId: number, numeroRodada: number, palpites: PalpiteDto[]): Promise<void> {
         const usuario = await this.usuarioRepository.findById(usuarioId);
         const rodada = await this.rodadaRepository.findByNumeroRodada(numeroRodada);
+        if (rodada.campeonato.status !== "ativo") {
+            throw new Error("Você não pode apostar em um campeonato finalizado");
+        }
         const usuarioRegistrado = usuario.campeonatos.some(campeonato => campeonato.id === rodada.campeonato.id);
 
         if (!usuarioRegistrado) {
