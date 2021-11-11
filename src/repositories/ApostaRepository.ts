@@ -6,7 +6,7 @@ import { IApostaRepository } from "./IApostaRepository";
 export class ApostaRepository extends Repository<Aposta> implements IApostaRepository {
     findAll(): Promise<Aposta[]> {
         return this.find({
-            relations: ['partida']
+            relations: ['partida', 'usuario']
         })
     }
     findbyUsuarioAndPartida(usuarioId: number, partidaId: number): Promise<Aposta> {

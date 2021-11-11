@@ -63,24 +63,20 @@ export class ApostaService implements IApostaService {
         return;
     }
 
-    async gerarClassificacao(): Promise<string[]> {
+    async gerarClassificacao(): Promise<classificacaoDTO[]> {
         const apostas = await this.apostaRepository.findAll();
         const usuariosQueApostaram = await this.usuariosQueApostaram(apostas);
-        const dadosUsuarios: classificacaoDTO[] = usuariosQueApostaram.map(({id, nome}) => {
+        const usuariosEPontuacao: classificacaoDTO[] = usuariosQueApostaram.map(usuario => {
             let pontuacao = 0;
             apostas.forEach(aposta => {
-                if (id === aposta.usuario.id) {
+                if (usuario.id === aposta.usuario.id) {
                     pontuacao += aposta.pontos;
                 }
             })
-            return { nome, pontuacao };
+            return { usuario, pontuacao };
         })
 
-        const classificacao = dadosUsuarios.sort((a, b) => a.pontuacao - b.pontuacao);
-
-        return classificacao.map((usuario, i) => {
-            return `${i+1}o ${usuario.nome} ${usuario.pontuacao}`;
-        });
+        return usuariosEPontuacao.sort((a, b) => a.pontuacao - b.pontuacao);
     }
 
     private async usuariosQueApostaram(apostas: Aposta[]): Promise<Usuario[]> {

@@ -1,4 +1,6 @@
+import { Usuario } from "../../models/UsuarioEntity";
+
 export type classificacaoDTO = {
-    nome: string;
+    usuario: Usuario
     pontuacao: number;
 }

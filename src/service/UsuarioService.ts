@@ -45,6 +45,7 @@ export class UsuarioService implements IUsuarioService {
 
       usuario.campeonatos.push(campeonato);
       await this.usuarioRepository.save(usuario);
+      return;
     } catch (error) {
       throw new Error(`Houve um erro: ${error.message}`);
     }
