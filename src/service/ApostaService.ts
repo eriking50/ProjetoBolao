@@ -80,13 +80,18 @@ export class ApostaService implements IApostaService {
     }
 
     private async usuariosQueApostaram(apostas: Aposta[]): Promise<Usuario[]> {
-        const IdsUsuariosApostaram = apostas.map(aposta => aposta.usuario.id);
-        const usuariosFiltrados = [...new Set(IdsUsuariosApostaram)];
-
-        const usuariosPromise = usuariosFiltrados.map(usuarioFiltrado => {
-            return this.usuarioRepository.findById(usuarioFiltrado);
+        const usuariosApostaram = apostas.map(aposta => aposta.usuario);
+        const idUsuarioApostaram = usuariosApostaram.map(usuario => usuario.id);
+        const usuariosFiltrados = [...new Set(idUsuarioApostaram)];
+        const usuarios = usuariosApostaram.filter(usuarioApostou => {
+            return usuariosFiltrados.forEach(usuarioFiltrado => {
+                if (usuarioApostou.id === usuarioFiltrado) {
+                    return true;
+                }
+            });
         })
-        return await Promise.all(usuariosPromise);
+
+        return usuarios;
     }
 
     private calcularPontuacao(aposta: Aposta): Aposta {
