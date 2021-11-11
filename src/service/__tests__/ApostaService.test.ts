@@ -54,7 +54,7 @@ describe("ApostaService", () => {
         campeonato.nome = faker.lorem.word();
         campeonato.nomePopular = faker.lorem.word();
         campeonato.slug = faker.lorem.word();
-        campeonato.status = faker.lorem.word();
+        campeonato.status = 'ativo';
         campeonato.id = campeonatoId;
 
         usuario = new Usuario();
@@ -180,8 +180,15 @@ describe("ApostaService", () => {
             jest.spyOn(rodadaRepo, "findByNumeroRodada").mockResolvedValue(rodada);
             jest.spyOn(partidaRepo, "findbyRodadaId").mockResolvedValue([partida]);
             jest.spyOn(apostaRepo, "findbyUsuarioAndPartida").mockResolvedValue(aposta);
-
+            
             await expect(apostaService.gerarApostas(usuarioId, numeroRodada, [palpite])).resolves.not.toBeDefined();
+        });
+        it("Deve retornar um erro caso o campeonato não esteja ativo", async () => {
+            campeonato.status = faker.lorem.word();
+            jest.spyOn(rodadaRepo, "findByNumeroRodada").mockResolvedValue(rodada);
+            jest.spyOn(usuarioRepo, "findById").mockResolvedValue(usuario);
+            
+            await expect(apostaService.gerarApostas(usuarioId, numeroRodada, [palpite])).rejects.toThrow();
         });
     });
     describe("atualizarPontuacao", () => {
