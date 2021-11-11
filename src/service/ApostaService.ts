@@ -65,10 +65,12 @@ export class ApostaService implements IApostaService {
 
     async gerarClassificacao(): Promise<classificacaoDTO[]> {
         const apostas = await this.apostaRepository.findAll();
+        console.log(apostas);
         const usuariosQueApostaram = await this.usuariosQueApostaram(apostas);
         const usuariosEPontuacao: classificacaoDTO[] = usuariosQueApostaram.map(usuario => {
             let pontuacao = 0;
             apostas.forEach(aposta => {
+                console.log(aposta.usuario)
                 if (usuario.id === aposta.usuario.id) {
                     pontuacao += aposta.pontos;
                 }
