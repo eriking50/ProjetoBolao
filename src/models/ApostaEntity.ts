@@ -17,6 +17,11 @@ export class Aposta {
     })
     placarVisitante: number;
 
+    @Column({
+        nullable: true
+    })
+    pontos?: number;
+
     @ManyToOne(() => Usuario, usuario => usuario.apostas)
     usuario: Usuario;
 

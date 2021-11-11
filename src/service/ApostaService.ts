@@ -5,6 +5,9 @@ import { IApostaRepository } from "../repositories/IApostaRepository";
 import { IRodadaRepository } from "../repositories/IRodadaRepository";
 import { IPartidaRepository } from "../repositories/IPartidaRepository";
 import { IApostaService } from "./IApostaService";
+import { gerarResultado } from "../helpers/resultado";
+import { Usuario } from "../models/UsuarioEntity";
+import { classificacaoDTO } from "../@types/dtos/classificacaoDTO";
 
 export class ApostaService implements IApostaService {
     constructor(
@@ -44,5 +47,62 @@ export class ApostaService implements IApostaService {
         })
         await Promise.all(apostasPromise);
         return;
+    }
+
+    async atualizarPontuacao(): Promise<void> {
+        const apostas = await this.apostaRepository.findAll();
+        const apostasAtualizadas = apostas.map(aposta => {
+            if (aposta.partida.status === "finalizado") {
+                return this.calcularPontuacao(aposta);
+            }
+        })
+        const apostasPromise = apostasAtualizadas.map(apostaAtualizada => {
+            return this.apostaRepository.save(apostaAtualizada);
+        })
+        await Promise.all(apostasPromise);
+        return;
+    }
+
+    async gerarClassificacao(): Promise<classificacaoDTO[]> {
+        const apostas = await this.apostaRepository.findAll();
+        console.log(apostas);
+        const usuariosQueApostaram = await this.usuariosQueApostaram(apostas);
+        const usuariosEPontuacao: classificacaoDTO[] = usuariosQueApostaram.map(usuario => {
+            let pontuacao = 0;
+            apostas.forEach(aposta => {
+                console.log(aposta.usuario)
+                if (usuario.id === aposta.usuario.id) {
+                    pontuacao += aposta.pontos;
+                }
+            })
+            return { usuario, pontuacao };
+        })
+
+        return usuariosEPontuacao.sort((a, b) => a.pontuacao - b.pontuacao);
+    }
+
+    private async usuariosQueApostaram(apostas: Aposta[]): Promise<Usuario[]> {
+        const IdsUsuariosApostaram = apostas.map(aposta => aposta.usuario.id);
+        const usuariosFiltrados = [...new Set(IdsUsuariosApostaram)];
+
+        const usuariosPromise = usuariosFiltrados.map(usuarioFiltrado => {
+            return this.usuarioRepository.findById(usuarioFiltrado);
+        })
+        return await Promise.all(usuariosPromise);
+    }
+
+    private calcularPontuacao(aposta: Aposta): Aposta {
+        let pontos = 0;
+        if (aposta.placarMandante === aposta.partida.placarMandante) {
+            pontos += 3;
+        }
+        if (aposta.placarVisitante === aposta.partida.placarVisitante) {
+            pontos += 3;
+        }
+        if (gerarResultado(aposta.placarMandante, aposta.placarVisitante) === gerarResultado(aposta.partida.placarMandante, aposta.partida.placarVisitante)) {
+            pontos += 6;
+        }
+        aposta.pontos = pontos;
+        return aposta;
     }
 }

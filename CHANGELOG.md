@@ -93,8 +93,14 @@
 - Criado Repositório de Aposta que implementa a interface
 - Criado interface para Service de Aposta com os métodos:
     - criarApostas(usuarioId: number, numeroRodada: number, palpites: PalpiteDto[]): Promise<void>
+    - gerarClassificacao(): Promise<classificacaoDTO[]>
+    - atualizarPontuacao(): Promise<void>
 - Criado Service de Aposta que implementa a interface
 - Criado testes para ApostaService
+- Criado arquivo resultado com a função que retonar o vencedor ou empate da partida
+- Criado _classificacaoDTO_ com os seguintes campos:
+    - usuario [Usuario]
+    - pontuacao [number]
 - Criado _palpiteDTO_ com os sequintes campos:
     - partidaID [number]
     - golsMandante [number]
